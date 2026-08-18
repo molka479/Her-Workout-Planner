@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#1A0F0F"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="FitHer"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>FitHer — 12-Week Program</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+:root{
+  --rose:#E8705A;
+  --rose-light:#F0967F;
+  --rose-dark:#C45840;
+  --dark:#1A0F0F;
+  --card:#221414;
+  --card2:#2A1818;
+  --border:#3D2020;
+  --muted:#9A7070;
+  --text:#F5EAE8;
+  --gold:#D4A853;
+  --teal:#4DBFA8;
+  --purple:#B07EC8;
+}
+html,body{background:var(--dark);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%}
+input,button,select,textarea{font-family:inherit}
+button{cursor:pointer;border:none;background:none}
+input:focus{outline:2px solid var(--rose);outline-offset:1px}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+
+/* Layout */
+#app{min-height:100vh;padding-bottom:calc(env(safe-area-inset-bottom)+68px)}
+#top-nav{position:sticky;top:0;z-index:100;background:var(--card);border-bottom:1px solid var(--border);
+  padding:calc(env(safe-area-inset-top)+6px) 10px 6px;display:flex;gap:4px;overflow-x:auto;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#top-nav::-webkit-scrollbar{display:none}
+.tnav-btn{flex-shrink:0;padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;color:var(--muted);border:1px solid transparent;white-space:nowrap;transition:all .15s}
+.tnav-btn.active{color:var(--rose);background:rgba(232,112,90,.12);border-color:rgba(232,112,90,.3)}
+#content{max-width:640px;margin:0 auto;padding:14px 13px 8px}
+.page{display:none}
+.page.active{display:block}
+
+/* Bottom nav */
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--card);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 2px 7px;font-size:10px;font-weight:700;color:var(--muted);background:none;border:none}
+.bnav-btn.active{color:var(--rose)}
+.bnav-btn span:first-child{font-size:21px;line-height:1}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.card-rose{border-color:rgba(232,112,90,.35)}
+.card-gold{border-color:rgba(212,168,83,.35)}
+.card-teal{border-color:rgba(77,191,168,.35)}
+.card-purple{border-color:rgba(176,126,200,.35)}
+
+/* Hero */
+.hero{text-align:center;padding:20px 4px 14px;position:relative}
+.hero-badge{display:inline-block;background:rgba(232,112,90,.15);border:1px solid rgba(232,112,90,.3);border-radius:999px;padding:5px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--rose);margin-bottom:14px;text-transform:uppercase}
+.hero-title{font-size:28px;font-weight:900;line-height:1.15;letter-spacing:-.5px;margin-bottom:8px}
+.hero-accent{color:var(--rose)}
+.hero-sub{color:var(--muted);font-size:13px}
+
+/* Stat grid */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--rose);opacity:.4}
+.stat-val{font-size:22px;font-weight:900;color:var(--rose)}
+.stat-label{font-size:12px;font-weight:700;margin-top:3px}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Phase timeline */
+.timeline{position:relative;padding-left:20px;margin-bottom:4px}
+.timeline::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:10px}
+.tl-dot{position:absolute;left:-16px;top:12px;width:10px;height:10px;border-radius:50%;border:2px solid}
+.tl-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 14px}
+.tl-wk{font-size:11px;font-family:monospace;font-weight:700;margin-bottom:2px}
+.tl-name{font-size:13px;font-weight:800}
+.tl-focus{font-size:12px;color:var(--muted);margin-top:1px}
+
+/* Section labels */
+.section-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.page-title{font-size:22px;font-weight:900;margin-bottom:3px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+/* Pills */
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.pill-rose{background:rgba(232,112,90,.15);color:var(--rose);border:1px solid rgba(232,112,90,.3)}
+.pill-gold{background:rgba(212,168,83,.15);color:var(--gold);border:1px solid rgba(212,168,83,.3)}
+.pill-teal{background:rgba(77,191,168,.15);color:var(--teal);border:1px solid rgba(77,191,168,.3)}
+.pill-muted{background:rgba(154,112,112,.15);color:var(--muted);border:1px solid rgba(154,112,112,.3)}
+
+/* Split rows */
+.split-row{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)}
+.split-row:last-child{border-bottom:none}
+.split-day{min-width:82px;font-family:monospace;font-size:11px;color:var(--muted);padding-top:2px}
+.split-session{font-size:13px;font-weight:700}
+.split-muscle{font-size:11px;color:var(--muted);margin-top:2px}
+.focus-tag{display:inline-block;font-size:10px;font-weight:700;color:var(--rose);background:rgba(232,112,90,.1);border-radius:5px;padding:1px 6px;margin-left:5px;vertical-align:middle}
+
+/* Week selector */
+.week-grid{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.week-btn{padding:5px 9px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.week-btn.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+.week-btn.has-data{border-color:rgba(232,112,90,.4);color:var(--rose)}
+
+/* Day buttons */
+.day-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.day-btn{padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--card);color:var(--muted)}
+.day-btn.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+
+/* Exercise block */
+.ex-block{background:var(--card2);border-radius:14px;padding:14px;border:1px solid var(--border);margin-bottom:10px}
+.ex-block.done{border-color:rgba(232,112,90,.5)}
+.ex-block.glute{border-left:3px solid var(--gold)}
+.ex-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.ex-meta{font-size:11px;color:var(--muted)}
+.ex-prog{color:var(--rose)}
+.warmup-tag{display:inline-block;font-size:11px;color:var(--gold);background:rgba(212,168,83,.1);border-radius:6px;padding:2px 8px;margin:6px 0}
+.glute-tag{display:inline-block;font-size:10px;color:var(--gold);background:rgba(212,168,83,.15);border:1px solid rgba(212,168,83,.3);border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle}
+.sub-tag{font-size:11px;color:var(--muted);margin-top:6px}
+
+/* Set rows */
+.set-headers{display:grid;grid-template-columns:38px 1fr 1fr 52px;gap:5px;padding-bottom:4px;border-bottom:1px solid var(--border);margin-bottom:5px}
+.set-hdr{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.6px}
+.set-row{display:grid;grid-template-columns:38px 1fr 1fr 52px;gap:5px;align-items:center;margin-bottom:4px;border-radius:8px;padding:2px 0}
+.set-row.done{background:rgba(232,112,90,.05)}
+.set-num{font-size:12px;font-weight:700;color:var(--muted)}
+.set-row.done .set-num{color:var(--rose)}
+.set-input{width:100%;background:#1A0F0F;border:1px solid var(--border);border-radius:8px;padding:8px 9px;color:var(--text);font-size:16px;font-family:monospace}
+.set-input.filled{border-color:rgba(232,112,90,.55)}
+.set-status{font-size:11px;font-weight:700;text-align:center;border-radius:7px;padding:6px 2px;background:rgba(61,32,32,.6);color:var(--muted)}
+.set-status.done{background:rgba(232,112,90,.15);color:var(--rose)}
+
+/* Vol badge */
+.vol-badge{display:inline-block;background:rgba(232,112,90,.12);border:1px solid rgba(232,112,90,.25);border-radius:7px;padding:2px 8px;font-size:11px;color:var(--rose);font-weight:700}
+
+/* Phase banner */
+.phase-banner{border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:13px}
+.phase-title{font-weight:700;margin-bottom:2px}
+.phase-note{color:var(--muted);font-size:12px}
+.deload-tag{display:inline-block;background:rgba(212,168,83,.15);color:var(--gold);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;margin-left:6px}
+
+/* Log actions */
+.log-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px}
+.log-vol{font-size:13px;font-weight:700;color:var(--rose)}
+.btn-clear{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;color:var(--muted);border:1px solid var(--border);background:transparent}
+.btn-save{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:800;background:var(--rose);color:#fff;border:none}
+.btn-save.flashed{background:var(--rose-dark)}
+
+/* Macro table */
+.mtable-wrap{overflow-x:auto;border-radius:10px;margin-bottom:12px}
+.mtable{width:100%;border-collapse:collapse;font-size:12px;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.mtable th{padding:9px 11px;background:#140A0A;color:var(--rose);font-weight:700;text-align:left;font-size:11px}
+.mtable td{padding:8px 11px;color:var(--muted);border-top:1px solid var(--border)}
+.mtable td:first-child{color:var(--text);font-weight:600}
+
+/* Timing rows */
+.timing-row{display:flex;gap:11px;background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:10px 13px;margin-bottom:7px}
+.timing-time{min-width:68px;font-family:monospace;color:var(--rose);font-size:11px;font-weight:700;padding-top:1px;flex-shrink:0}
+.timing-label{font-size:13px;font-weight:700}
+.timing-note{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Recipe cards */
+.recipe-card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:10px;overflow:hidden}
+.recipe-header{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;cursor:pointer}
+.recipe-name{font-size:14px;font-weight:700;margin-bottom:3px}
+.recipe-kcal{font-size:12px;color:var(--rose);font-weight:700}
+.recipe-prep{font-size:12px;color:var(--muted)}
+.macro-badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.mbadge{border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700}
+.mbadge-p{background:rgba(77,191,168,.15);color:var(--teal)}
+.mbadge-c{background:rgba(212,168,83,.15);color:var(--gold)}
+.mbadge-f{background:rgba(176,126,200,.15);color:var(--purple)}
+.recipe-toggle{font-size:14px;color:var(--muted);flex-shrink:0;padding-left:10px}
+.recipe-body{border-top:1px solid var(--border);padding:13px 15px;display:none}
+.recipe-body.open{display:block}
+.recipe-section-lbl{font-size:11px;font-weight:700;color:var(--rose);letter-spacing:.8px;margin-bottom:6px;text-transform:uppercase}
+.recipe-list{padding-left:16px;color:var(--muted);font-size:13px;line-height:1.9;margin-bottom:10px}
+
+/* Tracker grid */
+.tracker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:18px}
+.wk-card{border-radius:12px;padding:9px 5px;cursor:pointer;text-align:center;border:2px solid var(--border);background:#140A0A;transition:all .12s}
+.wk-num{font-size:13px;font-weight:800}
+.wk-phase{font-size:10px;color:var(--muted);margin-top:1px}
+.wk-vol{font-size:11px;font-weight:700;margin-top:4px;color:var(--border)}
+.wk-vol.has{color:var(--rose)}
+.wk-dots{display:flex;justify-content:center;gap:3px;margin-top:5px}
+.wk-dot{width:6px;height:6px;border-radius:50%;background:var(--border)}
+.wk-dot.done{background:var(--rose)}
+
+/* Week detail */
+.wk-detail{border-radius:14px;padding:14px 15px;margin-bottom:14px}
+.wk-detail-title{font-size:18px;font-weight:800;margin-bottom:3px}
+.wk-detail-note{font-size:12px;color:var(--muted)}
+.session-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.session-btn{padding:7px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid var(--border);background:#140A0A;color:var(--muted);cursor:pointer}
+.session-btn.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+.session-btn.has-data{border-color:rgba(232,112,90,.5);color:var(--rose)}
+
+/* PR board */
+.pr-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#140A0A;border-radius:10px;border:1px solid var(--border);margin-bottom:7px}
+.pr-ex{font-size:13px;font-weight:600}
+.pr-val{font-size:16px;font-weight:800;color:var(--gold)}
+
+/* Volume chart */
+.vol-chart{display:flex;align-items:flex-end;gap:3px;height:48px;margin-bottom:4px}
+.vol-bar{flex:1;border-radius:3px 3px 0 0;min-height:2px;opacity:.3}
+.vol-bar.has{opacity:1}
+.vol-labels{display:flex;margin-bottom:10px}
+.vol-label{flex:1;text-align:center;font-size:9px;font-weight:700;color:var(--border)}
+.vol-label.has{color:var(--rose)}
+
+/* Shopping */
+.shop-item{display:flex;gap:10px;align-items:center;padding:7px 0;cursor:pointer}
+.shop-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.shop-check.checked{background:var(--rose);border-color:var(--rose)}
+.shop-check-inner{font-size:12px;font-weight:900;color:#fff;display:none}
+.shop-check.checked .shop-check-inner{display:block}
+.shop-text{font-size:13px}
+.shop-text.checked{color:var(--muted);text-decoration:line-through}
+
+/* Cat tabs */
+.cat-tabs{display:flex;gap:7px;margin-bottom:14px}
+.cat-tab{flex:1;padding:8px 6px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid var(--border);background:var(--card);color:var(--muted);text-align:center}
+.cat-tab.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+
+/* Schedule */
+.sch-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 15px;margin-bottom:10px}
+.sch-day{font-family:monospace;font-size:12px;font-weight:700;color:var(--rose);margin-bottom:2px}
+.sch-session{font-size:15px;font-weight:800;margin-bottom:8px}
+.sch-meals{padding-top:8px;border-top:1px solid var(--border)}
+.sch-meal{display:flex;gap:8px;font-size:12px;color:var(--muted);margin-bottom:3px}
+
+/* ── EXERCISE DEMO MODAL ── */
+#demo-modal{position:fixed;inset:0;z-index:500;display:none;align-items:flex-end}
+#demo-modal.open{display:flex}
+.demo-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.75)}
+.demo-sheet{position:relative;z-index:1;background:var(--card);border-radius:24px 24px 0 0;border:1px solid var(--border);width:100%;max-height:92vh;overflow-y:auto;padding:20px 18px 40px}
+.demo-close{position:absolute;top:14px;right:14px;background:var(--card2);border:1px solid var(--border);border-radius:50%;width:32px;height:32px;font-size:18px;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.demo-title{font-size:19px;font-weight:900;margin-bottom:4px;padding-right:40px}
+.demo-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+
+/* How-to steps */
+.howto-title{font-size:13px;font-weight:800;color:var(--rose);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.howto-step{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+.howto-num{width:24px;height:24px;border-radius:50%;background:var(--rose);color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.howto-text{font-size:13px;color:var(--muted);line-height:1.6;flex:1}
+.howto-text strong{color:var(--text)}
+/* Key cues */
+.cues-title{font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.8px;text-transform:uppercase;margin:14px 0 8px}
+.cue-item{display:flex;gap:8px;margin-bottom:7px;font-size:13px;color:var(--muted)}
+.cue-icon{font-size:16px;flex-shrink:0}
+/* Muscles hit */
+.muscles-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+/* Info btn on exercise */
+.info-btn{background:rgba(232,112,90,.12);border:1px solid rgba(232,112,90,.3);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:var(--rose);cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+/* ── WELLNESS TAB ── */
+.wellness-hero{background:linear-gradient(135deg,rgba(176,126,200,.15),rgba(232,112,90,.1));border:1px solid rgba(176,126,200,.3);border-radius:18px;padding:20px;margin-bottom:16px;text-align:center}
+.wellness-hero-title{font-size:22px;font-weight:900;margin-bottom:6px}
+.wellness-hero-sub{font-size:13px;color:var(--muted);line-height:1.6}
+/* Phase cycle selector */
+.cycle-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.cycle-tab{padding:12px 8px;border-radius:14px;border:1px solid var(--border);background:var(--card2);cursor:pointer;text-align:center}
+.cycle-tab.active{border-color:rgba(176,126,200,.5);background:rgba(176,126,200,.1)}
+.cycle-tab-icon{font-size:24px;margin-bottom:4px}
+.cycle-tab-label{font-size:12px;font-weight:700}
+.cycle-tab-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.cycle-tab.active .cycle-tab-label{color:var(--purple)}
+/* Advice cards */
+.advice-section{margin-bottom:6px}
+.advice-header{font-size:15px;font-weight:800;margin-bottom:12px}
+.advice-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.advice-card-title{font-size:13px;font-weight:800;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.advice-card-body{font-size:13px;color:var(--muted);line-height:1.7}
+.advice-list{list-style:none;padding:0;margin:6px 0 0}
+.advice-list li{display:flex;gap:8px;margin-bottom:5px;font-size:13px;color:var(--muted);align-items:flex-start}
+.advice-list li::before{content:"→";color:var(--rose);flex-shrink:0;font-weight:700}
+/* Energy meter */
+.energy-btns{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.energy-btn{flex:1;min-width:80px;padding:10px 6px;border-radius:12px;border:1px solid var(--border);background:var(--card2);cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:var(--muted)}
+.energy-btn.active{border-color:rgba(232,112,90,.5);background:rgba(232,112,90,.1);color:var(--rose)}
+/* Symptom toggle */
+.symptom-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.symptom-btn{padding:9px 8px;border-radius:11px;border:1px solid var(--border);background:var(--card2);cursor:pointer;text-align:center;font-size:12px;font-weight:600;color:var(--muted)}
+.symptom-btn.active{border-color:rgba(176,126,200,.5);background:rgba(176,126,200,.1);color:var(--purple)}
+/* Workout mod card */
+.mod-card{border-radius:14px;padding:14px 15px;margin-bottom:10px;border:1px solid}
+.mod-orig{font-size:11px;color:var(--muted);margin-bottom:3px;text-decoration:line-through}
+.mod-new{font-size:14px;font-weight:700;margin-bottom:4px}
+.mod-why{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* Page-enter animation */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:fadeUp .22s ease}
+
+
+
+/* ── SESSION COMMENTS ── */
+.comment-section{margin-top:14px;border-top:1px solid var(--border);padding-top:14px}
+.comment-label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.comment-count{font-size:11px;font-weight:700;color:var(--rose)}
+.comment-input-row{display:flex;gap:8px;margin-bottom:10px}
+.comment-input{flex:1;background:#140A0A;border:1px solid var(--border);border-radius:10px;padding:9px 12px;color:var(--text);font-size:14px;resize:none;outline:none;min-height:42px;line-height:1.4}
+.comment-input:focus{border-color:rgba(232,112,90,.5)}
+.comment-submit{background:var(--rose);border:none;border-radius:10px;padding:9px 14px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;flex-shrink:0;align-self:flex-end}
+.comment-submit:active{background:var(--rose-dark)}
+.comment-list{display:grid;gap:8px}
+.comment-item{background:#140A0A;border:1px solid var(--border);border-radius:10px;padding:10px 12px;position:relative}
+.comment-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.comment-date{font-size:11px;color:var(--muted);font-family:monospace}
+.comment-rating{font-size:14px}
+.comment-text{font-size:13px;color:var(--text);line-height:1.55}
+.comment-delete{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--border);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:6px}
+.comment-delete:active{color:var(--rose)}
+.rating-row{display:flex;gap:6px;margin-bottom:8px}
+.rating-btn{font-size:20px;background:none;border:none;cursor:pointer;opacity:.35;transition:opacity .15s;padding:2px}
+.rating-btn.selected{opacity:1}
+.no-comments{font-size:13px;color:var(--muted);text-align:center;padding:10px 0;font-style:italic}
+
+</style>
+</head>
+<body>
+<div id="demo-modal">
+  <div class="demo-backdrop"></div>
+  <div class="demo-sheet">
+    <button class="demo-close" onclick="closeDemo()">×</button>
+    <div class="demo-title"></div>
+    <div class="demo-tags"></div>
+
+    <div class="howto-title">HOW TO DO IT</div>
+    <div class="howto-steps"></div>
+    <div class="cues-title">KEY COACHING CUES</div>
+    <div class="cues-list"></div>
+  </div>
+</div>
+<div id="app">
+  <nav id="top-nav">
+    <button class="tnav-btn active" data-tab="overview">🏠 Home</button>
+    <button class="tnav-btn" data-tab="workout">💪 Workout</button>
+    <button class="tnav-btn" data-tab="tracker">📅 Tracker</button>
+    <button class="tnav-btn" data-tab="diet">🥗 Diet</button>
+    <button class="tnav-btn" data-tab="recipes">🍽 Recipes</button>
+    <button class="tnav-btn" data-tab="shopping">🛒 Shop</button>
+    <button class="tnav-btn" data-tab="micros">🔬 Micros</button>
+    <button class="tnav-btn" data-tab="schedule">📆 Schedule</button>
+    <button class="tnav-btn" data-tab="wellness">🌸 Wellness</button>
+  </nav>
+  <div id="content">
+    <div class="page active" id="page-overview"></div>
+    <div class="page" id="page-workout"></div>
+    <div class="page" id="page-tracker"></div>
+    <div class="page" id="page-diet"></div>
+    <div class="page" id="page-recipes"></div>
+    <div class="page" id="page-shopping"></div>
+    <div class="page" id="page-micros"></div>
+    <div class="page" id="page-schedule"></div>
+    <div class="page" id="page-wellness"></div>
+  </div>
+  <nav id="bottom-nav">
+    <button class="bnav-btn active" data-tab="overview"><span>🏠</span><span>Home</span></button>
+    <button class="bnav-btn" data-tab="workout"><span>💪</span><span>Workout</span></button>
+    <button class="bnav-btn" data-tab="tracker"><span>📅</span><span>Tracker</span></button>
+    <button class="bnav-btn" data-tab="diet"><span>🥗</span><span>Diet</span></button>
+    <button class="bnav-btn" data-tab="recipes"><span>🍽</span><span>Recipes</span></button>
+    <button class="bnav-btn" data-tab="shopping"><span>🛒</span><span>Shop</span></button>
+  </nav>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════
+const PHASE_COLORS={Foundation:"#4DBFA8",Deload:"#9A7070",Intensification:"#D4A853",Peaking:"#E8705A","Deload / Test":"#B07EC8"};
+const WEEK_PHASE=["Foundation","Foundation","Foundation","Deload","Intensification","Intensification","Intensification","Deload","Peaking","Peaking","Peaking","Deload / Test"];
+const WEEK_PLAN=[
+  {m:1,note:"Build the mind-muscle connection. Feel every rep."},
+  {m:1,note:"Add weight on glute and back movements if form is solid."},
+  {m:1,note:"Push working weights — aim for progressive tension."},
+  {m:.5,note:"Deload: 50% volume. Active recovery, stretch & walk."},
+  {m:1,note:"Increase load 5–10%. Drop reps, more resistance."},
+  {m:1,note:"Max progressive overload on hip thrusts & rows."},
+  {m:1,note:"Heaviest week yet — every set should be a challenge."},
+  {m:.5,note:"Deload: flush fatigue. Foam roll, stretch, sleep well."},
+  {m:1,note:"Peak phase — chase PRs on hip thrust & deadlift."},
+  {m:1,note:"Maintain volume, push intensity on every exercise."},
+  {m:1,note:"Final heavy week. Leave everything in the gym."},
+  {m:.5,note:"Deload + test week. Attempt PR on key lifts."},
+];
+
+// 3 days/week PPL — Legs emphasis (2 leg days built in as Legs A heavy glute, Pull B has posterior chain)
+const WORKOUTS={
+  "Legs + Glutes":[
+    {e:"Barbell Hip Thrust",w:"2×10 @50%",s:"4×10",r:"10–12",rest:"2 min",p:"+2.5kg/wk",sub:"DB Hip Thrust / Glute Bridge",glute:true},
+    {e:"Romanian Deadlift",w:"1×8 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+2.5kg/wk",sub:"Single-Leg RDL / Leg Curl",glute:true},
+    {e:"Sumo Squat",w:"2×8 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+2.5kg/wk",sub:"Goblet Squat / Smith Sumo",glute:true},
+    {e:"Cable Kickback",w:"—",s:"3×15",r:"15",rest:"60s",p:"+2.5kg/2wks",sub:"Resistance Band Kickback",glute:true},
+    {e:"Leg Curl (Machine)",w:"—",s:"3×12",r:"12–15",rest:"60s",p:"+5kg/2wks",sub:"Nordic Curl / Ball Curl",glute:false},
+    {e:"Abduction Machine",w:"—",s:"3×20",r:"20–25",rest:"45s",p:"+5kg/wk",sub:"Banded Abduction",glute:true},
+    {e:"Standing Calf Raise",w:"—",s:"3×15",r:"15–20",rest:"45s",p:"+5kg/wk",sub:"Seated Calf Raise",glute:false},
+  ],
+  "Push (Upper)":[
+    {e:"Dumbbell Shoulder Press",w:"1×10 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+1kg/wk",sub:"Barbell OHP / Machine Press",glute:false},
+    {e:"Incline DB Press",w:"1×10 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+1kg/wk",sub:"Cable Fly / Smith Press",glute:false},
+    {e:"Lateral Raise",w:"—",s:"3×15",r:"15",rest:"60s",p:"+0.5kg/wk",sub:"Cable Lateral Raise",glute:false},
+    {e:"Cable Chest Fly",w:"—",s:"3×12",r:"12–15",rest:"60s",p:"+2.5kg/wk",sub:"Pec Deck / DB Fly",glute:false},
+    {e:"Tricep Pushdown (Rope)",w:"—",s:"3×12",r:"12–15",rest:"60s",p:"+2.5kg/wk",sub:"Overhead Extension",glute:false},
+    {e:"Front Raise",w:"—",s:"2×12",r:"12",rest:"60s",p:"+0.5kg/wk",sub:"Cable Front Raise",glute:false},
+  ],
+  "Pull + Back":[
+    {e:"Lat Pulldown",w:"1×10 @50%",s:"4×10",r:"10–12",rest:"90s",p:"+2.5kg/wk",sub:"Assisted Pull-Up / Cable Row",glute:false},
+    {e:"Seated Cable Row",w:"1×8 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+2.5kg/wk",sub:"Chest-Supported Row / DB Row",glute:false},
+    {e:"Single-Arm DB Row",w:"—",s:"3×10/side",r:"10–12",rest:"75s",p:"+1kg/wk",sub:"Machine Row",glute:false},
+    {e:"Face Pull",w:"—",s:"3×15",r:"15–20",rest:"60s",p:"+2.5kg/2wks",sub:"Band Pull-Apart",glute:false},
+    {e:"Stiff-Leg Deadlift",w:"1×8 @50%",s:"3×10",r:"10–12",rest:"90s",p:"+2.5kg/wk",sub:"Romanian DL / Leg Curl",glute:true},
+    {e:"Incline DB Curl",w:"—",s:"3×10",r:"10–12",rest:"60s",p:"+1kg/wk",sub:"Cable Curl / Hammer Curl",glute:false},
+    {e:"Reverse Fly (Pec Deck)",w:"—",s:"3×15",r:"15",rest:"60s",p:"+2.5kg/2wks",sub:"Face Pull / Band Pull-Apart",glute:false},
+  ],
+};
+
+// Weekly split — 3 days on, 4 flexible rest/cardio
+const SPLIT=[
+  {day:"Monday",session:"Legs + Glutes",muscles:"Hip Thrust · Sumo Squat · RDL · Kickback · Abduction",type:"legs",focus:true},
+  {day:"Tuesday",session:"Rest / Walk",muscles:"20–30 min walk or complete rest",type:"rest",focus:false},
+  {day:"Wednesday",session:"Push (Upper)",muscles:"Shoulders · Chest · Triceps",type:"push",focus:false},
+  {day:"Thursday",session:"Rest / Stretch",muscles:"Yoga / foam rolling / mobility work",type:"rest",focus:false},
+  {day:"Friday",session:"Pull + Back",muscles:"Lats · Mid-Back · Rear Delts · Hamstrings",type:"pull",focus:false},
+  {day:"Saturday",session:"Cardio (Optional)",muscles:"30 min walk, cycle, swim or HIIT",type:"cardio",focus:false},
+  {day:"Sunday",session:"Full Rest",muscles:"Recovery — sleep, eat well, hydrate",type:"rest",focus:false},
+];
+
+// Stats: 83kg woman, goal fat loss + lean muscle. Protein 1.8g/kg = ~150g. Deficit ~300 kcal.
+// TDEE ~2100 kcal (moderate activity). Target ~1,800 kcal.
+const MACROS=[
+  ["Calories","1,800 kcal","~300 cal deficit from estimated TDEE of ~2,100"],
+  ["Protein","150g (600 kcal)","1.8g/kg — preserve muscle on a deficit"],
+  ["Carbohydrates","170g (680 kcal)","Prioritise around training days"],
+  ["Fats","58g (520 kcal)","Hormonal health; omega-3 priority"],
+  ["Fiber","28–35g","Gut health, satiety — crucial on a deficit"],
+];
+
+const MEAL_TIMING=[
+  ["7:00 AM","Breakfast","High protein start — 30–40g protein to ignite MPS"],
+  ["10:00 AM","Snack","Light protein snack — optional; only if hungry"],
+  ["12:30 PM","Lunch","Balanced macros; moderate carbs"],
+  ["3:00 PM","Pre-Workout","30g carbs + 20g protein 60–90 min before training"],
+  ["5:00 PM","Training","Sip water; 3–5g creatine pre or post"],
+  ["6:30 PM","Post-Workout","30–40g protein + 40–50g carbs within 60 min"],
+  ["8:30 PM","Dinner / Snack","Casein-rich meal — cottage cheese, Greek yogurt"],
+];
+
+const SUPPS=[
+  ["Creatine Monohydrate","3–5g/day","Any time, daily","Strength, power, lean mass — safe for women"],
+  ["Whey Protein","1 scoop (~25g protein)","Post-workout or to hit target","Fast-absorbing; supports muscle repair"],
+  ["Vitamin D3 + K2","2,000–3,000 IU","With a fatty meal","Bone health, hormones, immunity"],
+  ["Magnesium Glycinate","250–350mg","Before bed","Sleep quality, cramp prevention, recovery"],
+  ["Omega-3 Fish Oil","2g EPA+DHA","With meals","Reduces inflammation, supports hormonal health"],
+  ["Iron (if deficient)","As directed","With Vitamin C, away from dairy","Women often need supplemental iron — get tested"],
+  ["Collagen + Vit C","10g collagen","Before training","Joint and connective tissue support"],
+];
+
+const MICROS=[
+  ["Vitamin D","2,000–3,000 IU","Salmon, eggs, fortified milk, sunlight","Bone density and hormonal balance — critical for women"],
+  ["Iron","18 mg","Red meat, lentils, spinach (+ Vit C for absorption)","Menstruating women lose iron monthly — monitor levels"],
+  ["Calcium","1,000 mg","Greek yogurt, milk, cheese, broccoli, tofu","Bone health; works with Vit D and K2"],
+  ["Folate / B9","400 mcg","Leafy greens, legumes, fortified foods","Cell repair and energy metabolism"],
+  ["Magnesium","320 mg","Dark chocolate, almonds, spinach, black beans","PMS symptoms, sleep quality, muscle recovery"],
+  ["Zinc","8 mg","Beef, pumpkin seeds, chickpeas, cashews","Immune function, skin health, hormonal balance"],
+  ["Omega-3","2g EPA+DHA","Salmon, sardines, walnuts, chia seeds","Reduces DOMS and systemic inflammation"],
+  ["Potassium","2,600 mg","Banana, sweet potato, avocado","Electrolyte; prevents cramping during training"],
+];
+
+const RECIPES={
+  breakfasts:[
+    {name:"Tropical Protein Smoothie Bowl",prep:"5 min",cal:430,p:36,c:52,f:8,tag:"🥭",veg:true,
+     ing:["1 scoop vanilla whey protein","100g frozen mango chunks","1 frozen banana","100g Greek yogurt 0%","80ml coconut water","Toppings: granola, berries, chia seeds"],
+     steps:["Blend protein, mango, banana, yogurt, coconut water until thick.","Pour into bowl — should be thick enough to hold toppings.","Top with granola, berries and chia seeds."]},
+    {name:"Egg White & Veggie Scramble",prep:"10 min",cal:340,p:38,c:12,f:10,tag:"🥚",veg:true,
+     ing:["6 egg whites + 1 whole egg","100g baby spinach","½ red capsicum, diced","¼ red onion, diced","30g feta cheese","Olive oil spray, salt, pepper"],
+     steps:["Sauté capsicum and onion 2–3 min.","Add spinach, wilt 1 min.","Add eggs, scramble gently until just set.","Crumble feta on top and season."]},
+    {name:"Overnight Oats & Berry",prep:"5 min + overnight",cal:420,p:32,c:52,f:8,tag:"🍓",veg:true,
+     ing:["70g rolled oats","1 scoop whey protein (mixed in dry)","200ml low-fat milk","1 tbsp chia seeds","½ cup mixed berries","1 tsp honey"],
+     steps:["Mix oats, protein, milk, chia in a jar.","Refrigerate overnight.","Top with berries and honey in the morning."]},
+    {name:"Greek Yogurt Parfait",prep:"4 min",cal:390,p:34,c:44,f:7,tag:"🍯",veg:true,
+     ing:["280g 0% Greek yogurt","1 scoop collagen or whey mixed in","35g low-sugar granola","½ cup mixed berries","1 tsp honey"],
+     steps:["Mix protein powder into yogurt until smooth.","Layer yogurt, granola, and berries in a bowl.","Drizzle with honey."]},
+    {name:"Banana Protein Pancakes",prep:"12 min",cal:440,p:36,c:48,f:10,tag:"🥞",veg:true,
+     ing:["1 ripe banana","3 eggs","40g oat flour","½ scoop vanilla whey","Cinnamon","Sugar-free maple syrup"],
+     steps:["Mash banana, whisk with eggs, flour, protein, cinnamon.","Cook ¼ cup portions in a non-stick pan 2–3 min/side.","Serve with sugar-free maple syrup."]},
+    {name:"Tuna Rice Bowl",prep:"8 min",cal:440,p:40,c:48,f:7,tag:"🐟",veg:false,
+     ing:["1 can tuna in water (120g drained)","120g cooked white rice","½ avocado","Cucumber slices","Soy sauce, sesame oil, sesame seeds","Sriracha (optional)"],
+     steps:["Warm rice.","Drain tuna and season with soy and sesame oil.","Build bowl: rice, tuna, avocado, cucumber.","Finish with sesame seeds and sriracha."]},
+    {name:"Cottage Cheese Toast",prep:"5 min",cal:370,p:34,c:32,f:10,tag:"🍞",veg:true,
+     ing:["2 slices wholegrain bread","150g low-fat cottage cheese","½ avocado, mashed","4 cherry tomatoes, halved","Everything bagel seasoning","Lemon juice"],
+     steps:["Toast bread.","Spread mashed avocado on each slice.","Top with cottage cheese, tomatoes.","Season with everything bagel spice and a squeeze of lemon."]},
+  ],
+  lunches:[
+    {name:"Teriyaki Chicken Bowl",prep:"20 min",cal:520,p:44,c:52,f:10,tag:"🍗",veg:false,
+     ing:["170g chicken breast","120g cooked brown rice","1 cup broccoli steamed","½ cup edamame","2 tbsp teriyaki sauce","Sesame seeds, spring onion"],
+     steps:["Slice chicken, marinate in teriyaki 10 min.","Pan-fry chicken 5–6 min/side.","Assemble: rice, chicken, broccoli, edamame.","Top with sesame seeds and spring onion."]},
+    {name:"Lentil & Sweet Potato Curry",prep:"30 min",cal:490,p:24,c:70,f:9,tag:"🍛",veg:true,
+     ing:["150g red lentils","1 medium sweet potato, cubed","1 can chopped tomatoes","300ml light coconut milk","Onion, garlic, ginger","Curry powder, cumin, turmeric","120g cooked brown rice"],
+     steps:["Sauté onion, garlic, ginger 3 min. Toast spices.","Add lentils, sweet potato, tomatoes, coconut milk + water.","Simmer 20 min until thick.","Serve over rice."]},
+    {name:"Salmon Quinoa Salad",prep:"18 min",cal:530,p:42,c:40,f:17,tag:"🐟",veg:false,
+     ing:["150g salmon fillet","120g cooked quinoa","Mixed greens, cucumber, cherry tomatoes","½ avocado","Lemon-Dijon dressing: 1 tbsp olive oil, lemon, Dijon"],
+     steps:["Season salmon, pan-fry 4 min/side.","Assemble greens, quinoa, cucumber, tomatoes, avocado.","Flake salmon on top.","Drizzle with dressing."]},
+    {name:"Chicken & Veggie Stir-Fry",prep:"20 min",cal:480,p:42,c:44,f:10,tag:"🥦",veg:false,
+     ing:["170g chicken breast, sliced","Broccoli, capsicum, snap peas, carrot","2 tbsp soy sauce, oyster sauce","Garlic, ginger","120g cooked jasmine rice"],
+     steps:["Stir-fry chicken in hot wok 4–5 min.","Add vegetables and garlic, cook 3–4 min.","Add sauces, toss well.","Serve over rice."]},
+    {name:"High-Protein Tuna Wrap",prep:"8 min",cal:430,p:38,c:38,f:10,tag:"🌯",veg:false,
+     ing:["1 large whole-wheat tortilla","1 can tuna in water (drained)","100g low-fat cream cheese","Spinach, cucumber, red onion","Lemon juice, cracked pepper"],
+     steps:["Mix tuna with cream cheese, lemon, pepper.","Layer spinach, cucumber, onion on tortilla.","Spread tuna mix.","Roll firmly and slice in half."]},
+    {name:"Black Bean & Veggie Burrito Bowl",prep:"15 min",cal:470,p:26,c:62,f:12,tag:"🫘",veg:true,
+     ing:["1 can black beans, drained","120g cooked brown rice","Corn, salsa, jalapeño","½ avocado","Low-fat sour cream 2 tbsp","Taco seasoning, lime"],
+     steps:["Warm beans with taco seasoning.","Build bowl: rice, beans, corn, salsa.","Top with avocado, sour cream and lime."]},
+    {name:"Greek Chicken Salad",prep:"15 min",cal:450,p:42,c:18,f:22,tag:"🥗",veg:false,
+     ing:["170g grilled chicken breast","Cucumber, cherry tomatoes, red onion, kalamata olives","50g feta cheese","Romaine lettuce","Olive oil, lemon, oregano dressing"],
+     steps:["Slice grilled chicken.","Combine all salad vegetables.","Top with chicken and feta.","Drizzle with olive oil, lemon and oregano."]},
+  ],
+  snacks:[
+    {name:"Protein Shake + Fruit",prep:"2 min",cal:240,p:28,c:24,f:3,tag:"🥛",
+     ing:["1 scoop whey protein","200ml low-fat milk","1 small banana or handful berries"],
+     steps:["Blend or shake together. Drink immediately."]},
+    {name:"Greek Yogurt & Chia",prep:"2 min",cal:220,p:22,c:18,f:5,tag:"🍓",
+     ing:["200g 0% Greek yogurt","1 tbsp chia seeds","½ cup berries","Cinnamon"],
+     steps:["Mix chia into yogurt, top with berries and cinnamon."]},
+    {name:"Rice Cakes & Cottage Cheese",prep:"2 min",cal:200,p:20,c:22,f:3,tag:"🍚",
+     ing:["3 rice cakes","100g low-fat cottage cheese","Sliced cucumber","Everything bagel spice"],
+     steps:["Spread cottage cheese on rice cakes.","Top with cucumber and seasoning."]},
+    {name:"Edamame & Hummus",prep:"3 min",cal:260,p:16,c:22,f:10,tag:"🫛",
+     ing:["130g frozen edamame (microwaved)","3 tbsp hummus","Carrot and celery sticks"],
+     steps:["Microwave edamame 3 min, salt lightly.","Serve with hummus and vegetable sticks."]},
+    {name:"Apple & Almond Butter",prep:"1 min",cal:230,p:5,c:28,f:10,tag:"🍎",
+     ing:["1 large apple, sliced","1.5 tbsp natural almond butter"],
+     steps:["Slice apple. Serve with almond butter for dipping."]},
+  ],
+};
+
+const SHOPPING={
+  "🥩 Proteins":["Chicken breast — 1.2kg","Salmon fillets — 500g","Canned tuna in water — 6 cans","Eggs — 1.5 dozen","Egg whites (carton) — 500ml","Whey protein powder — 1kg tub","Greek yogurt 0% — 1.5kg","Low-fat cottage cheese — 750g","Low-fat cream cheese — 200g","Feta cheese — 150g","Collagen powder — 250g"],
+  "🍚 Carbs & Grains":["Brown rice — 1kg","White rice — 500g","Rolled oats — 1kg","Quinoa — 500g","Red lentils — 500g","Wholegrain bread — 1 loaf","Whole-wheat tortillas — 6 pack","Rice cakes — 1 pack","Low-sugar granola — 300g","Oat flour — 500g"],
+  "🥫 Canned & Legumes":["Canned black beans — 2 cans","Canned chickpeas — 2 cans","Canned chopped tomatoes — 2 cans","Light coconut milk — 1 can","Edamame (frozen) — 400g"],
+  "🥦 Fruit & Veg":["Baby spinach — 500g","Broccoli — 2 heads","Mixed capsicums — 4","Cherry tomatoes — 400g","Cucumber — 2","Red onions — 3","Sweet potato — 1kg","Avocados — 4","Bananas — 1 bunch","Frozen mango chunks — 400g","Mixed berries (fresh or frozen) — 500g","Apples — 6","Snap peas — 200g","Carrot + celery sticks","Corn — 1 can","Kalamata olives — 1 jar"],
+  "🧴 Oils & Condiments":["Olive oil — 500ml","Coconut water — 1L","Almond butter (natural) — 300g","Chia seeds — 200g","Soy sauce — 250ml","Oyster sauce","Teriyaki sauce","Salsa — 300ml jar","Hummus — 400g","Dijon mustard","Low-fat sour cream — 200g","Sugar-free maple syrup","Honey — small jar","Sesame oil, sesame seeds","Sriracha","Everything bagel seasoning","Taco seasoning"],
+  "💊 Supplements":["Creatine monohydrate — 300g","Vitamin D3+K2","Magnesium glycinate","Omega-3 fish oil","Iron supplement (if needed)","Low-fat milk — 2L"],
+  "🌿 Spices & Herbs":["Cinnamon","Vanilla extract","Curry powder","Cumin","Turmeric","Oregano","Chilli flakes","Garlic","Fresh ginger","Lemon × 4","Lime × 2"],
+};
+
+const WEEK1=[
+  {day:"Mon",session:"Legs + Glutes 🍑",meals:["Tropical Protein Smoothie Bowl","Teriyaki Chicken Bowl","Greek Yogurt & Chia","High-Protein Tuna Wrap","Greek Yogurt & Chia"]},
+  {day:"Tue",session:"Rest / Walk",meals:["Overnight Oats & Berry","Lentil & Sweet Potato Curry","Apple & Almond Butter","Greek Chicken Salad","Protein Shake + Fruit"]},
+  {day:"Wed",session:"Push (Upper) 💪",meals:["Egg White & Veggie Scramble","Chicken & Veggie Stir-Fry","Rice Cakes & Cottage Cheese","Salmon Quinoa Salad","Greek Yogurt & Chia"]},
+  {day:"Thu",session:"Rest / Stretch",meals:["Greek Yogurt Parfait","Black Bean & Veggie Burrito Bowl","Edamame & Hummus","Lentil & Sweet Potato Curry","Protein Shake + Fruit"]},
+  {day:"Fri",session:"Pull + Back 🏋️",meals:["Banana Protein Pancakes","Greek Chicken Salad","Apple & Almond Butter","Teriyaki Chicken Bowl","Rice Cakes & Cottage Cheese"]},
+  {day:"Sat",session:"Cardio (Optional)",meals:["Tuna Rice Bowl","Salmon Quinoa Salad","Greek Yogurt & Chia","Chicken & Veggie Stir-Fry","Protein Shake + Fruit"]},
+  {day:"Sun",session:"Full Rest",meals:["Cottage Cheese Toast","High-Protein Tuna Wrap","Apple & Almond Butter","Black Bean & Veggie Burrito Bowl","Greek Yogurt & Chia"]},
+];
+
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+let logs={}, shopping={}, currentTab="overview";
+let workoutWeek=0, workoutDay="Legs + Glutes";
+let trackerWeek=0, trackerDay="Legs + Glutes";
+let recipeCat="breakfasts";
+
+function loadState(){
+  try{logs=JSON.parse(localStorage.getItem("fph_logs")||"{}");}catch{}
+  try{shopping=JSON.parse(localStorage.getItem("fph_shop")||"{}");}catch{}
+}
+function saveLogs(){try{localStorage.setItem("fph_logs",JSON.stringify(logs));}catch{}}
+function saveShop(){try{localStorage.setItem("fph_shop",JSON.stringify(shopping));}catch{}}
+
+// ══════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════
+function setSets(s){const m=s.match(/^(\d+)/);return m?Math.max(parseInt(m[1]),1):3;}
+function sessionVol(wk,day){
+  const d=(logs[wk]||{})[day];if(!d)return 0;let v=0;
+  try{Object.values(d).forEach(ex=>{if(!ex||typeof ex!=="object")return;Object.values(ex).forEach(set=>{if(!set)return;v+=(parseFloat(set.kg)||0)*(parseFloat(set.reps)||0);});});}catch{}
+  return Math.round(v);
+}
+function weekVol(wk){return Object.keys(WORKOUTS).reduce((a,d)=>a+sessionVol(wk,d),0);}
+function weekDone(wk){return Object.keys(WORKOUTS).filter(d=>sessionVol(wk,d)>0).length;}
+function phaseCol(phase){return PHASE_COLORS[phase]||"#E8705A";}
+
+function el(tag,attrs,...children){
+  const e=document.createElement(tag);
+  if(attrs)Object.entries(attrs).forEach(([k,v])=>{if(k==="class")e.className=v;else if(k.startsWith("on"))e.addEventListener(k.slice(2).toLowerCase(),v);else e.setAttribute(k,v);});
+  children.flat().forEach(c=>{if(c==null||c===false)return;e.appendChild(typeof c==="string"?document.createTextNode(c):c);});
+  return e;
+}
+function div(cls,...children){return el("div",{class:cls},...children);}
+
+// ══════════════════════════════════════════════════
+// SESSION LOGGER
+// ══════════════════════════════════════════════════
+function renderLogger(container,wkIdx,dayKey){
+  container.innerHTML="";
+  const exList=WORKOUTS[dayKey];
+  if(!exList){container.innerHTML='<p style="color:var(--muted);padding:16px;text-align:center">Rest day — no lifting today! Walk, stretch, recover.</p>';return;}
+  const plan=WEEK_PLAN[wkIdx];
+  const col=phaseCol(WEEK_PHASE[wkIdx]);
+
+  // Phase banner
+  const ban=div("phase-banner");ban.style.background=col+"18";ban.style.border=`1px solid ${col}33`;
+  const bt=div("phase-title");bt.style.color=col;bt.textContent=`Week ${wkIdx+1} · ${WEEK_PHASE[wkIdx]}`;
+  if(plan.m<1){const dt=el("span",{class:"deload-tag"},"⚡ Deload");bt.appendChild(dt);}
+  const bn=div("phase-note");bn.textContent=plan.note;ban.append(bt,bn);container.appendChild(ban);
+
+  // Compute volume
+  let totalVol=0;
+  exList.forEach((ex,ei)=>{const n=Math.max(Math.ceil(setSets(ex.s)*plan.m),1);for(let si=0;si<n;si++){const s=((logs[wkIdx]||{})[dayKey]||{})[ei]||{};totalVol+=(parseFloat((s[si]||{}).kg)||0)*(parseFloat((s[si]||{}).reps)||0);}});
+
+  // Action bar
+  const ab=div("log-actions");
+  const vs=div("log-vol");vs.textContent=totalVol>0?`📊 ${Math.round(totalVol).toLocaleString()} kg`:"";
+  const br=el("div",{style:"display:flex;gap:8px"});
+  const cb=el("button",{class:"btn-clear"},"Clear");
+  const sb2=el("button",{class:"btn-save"},"Save ✓");
+  cb.onclick=()=>{if(!logs[wkIdx])return;delete logs[wkIdx][dayKey];saveLogs();renderLogger(container,wkIdx,dayKey);};
+  sb2.onclick=()=>{sb2.classList.add("flashed");sb2.textContent="Saved! ✓";setTimeout(()=>{sb2.classList.remove("flashed");sb2.textContent="Save ✓";},1800);saveLogs();};
+  br.append(cb,sb2);ab.append(vs,br);container.appendChild(ab);
+
+  // Exercises
+  exList.forEach((ex,ei)=>{
+    const numSets=Math.max(Math.ceil(setSets(ex.s)*plan.m),1);
+    const exData=(((logs[wkIdx]||{})[dayKey])||{})[ei]||{};
+    let exVol=0;for(let si=0;si<numSets;si++){exVol+=(parseFloat((exData[si]||{}).kg)||0)*(parseFloat((exData[si]||{}).reps)||0);}
+    const allDone=Array.from({length:numSets}).every((_,si)=>(exData[si]||{}).kg&&(exData[si]||{}).reps);
+
+    const block=div("ex-block"+(allDone?" done":"")+(ex.glute?" glute":""));
+    const hdr=el("div",{style:"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px"});
+    const hl=div("");
+    const nm=div("ex-name");
+    nm.textContent=(allDone?"✅ ":"")+ex.e;
+    if(ex.glute){const gt=el("span",{class:"glute-tag"},"🍑 Glute focus");nm.appendChild(gt);}
+    hl.appendChild(nm);
+    const mt=div("ex-meta");mt.innerHTML=`${ex.s} · ${ex.r} reps · ${ex.rest} · <span class="ex-prog">${ex.p}</span>`;hl.appendChild(mt);
+    hdr.appendChild(hl);
+    const rhsDiv=el("div",{style:"display:flex;gap:6px;align-items:flex-start;flex-shrink:0"});
+    if(exVol>0){const vb=div("vol-badge");vb.textContent=Math.round(exVol).toLocaleString()+"kg";rhsDiv.appendChild(vb);}
+    if(EX_INFO[ex.e]){const ib=el("button",{class:"info-btn"},"▶ How to");ib.onclick=(e)=>{e.stopPropagation();showDemo(ex.e);};rhsDiv.appendChild(ib);}
+    hdr.appendChild(rhsDiv);
+    block.appendChild(hdr);
+    if(ex.w!=="—"){const wt=div("warmup-tag");wt.textContent="🔥 Warm-up: "+ex.w;block.appendChild(wt);}
+
+    // Set headers
+    const ch=div("set-headers");
+    ["SET","KG","REPS","✓"].forEach(l=>{const d2=div("set-hdr");d2.textContent=l;ch.appendChild(d2);});
+    block.appendChild(ch);
+
+    for(let si=0;si<numSets;si++){
+      const setData=exData[si]||{};
+      const isDone=!!(setData.kg&&setData.reps);
+      const row=div("set-row"+(isDone?" done":""));
+      const sn=div("set-num");sn.textContent="S"+(si+1);row.appendChild(sn);
+
+      const kgIn=el("input",{class:"set-input"+(setData.kg?" filled":""),inputmode:"decimal",autocomplete:"off",placeholder:"kg"});
+      kgIn.value=setData.kg||"";
+      kgIn.addEventListener("input",e=>{
+        if(!logs[wkIdx])logs[wkIdx]={};if(!logs[wkIdx][dayKey])logs[wkIdx][dayKey]={};
+        if(!logs[wkIdx][dayKey][ei])logs[wkIdx][dayKey][ei]={};if(!logs[wkIdx][dayKey][ei][si])logs[wkIdx][dayKey][ei][si]={};
+        logs[wkIdx][dayKey][ei][si].kg=e.target.value;
+        const r2=e.target.closest(".set-row");const rep=r2.querySelector("input:last-of-type");
+        const done2=!!(e.target.value&&rep&&rep.value);
+        r2.className="set-row"+(done2?" done":"");r2.querySelector(".set-status").className="set-status"+(done2?" done":"");r2.querySelector(".set-status").textContent=done2?"✓":"—";
+        e.target.className="set-input"+(e.target.value?" filled":"");saveLogs();
+      });
+
+      const rpIn=el("input",{class:"set-input"+(setData.reps?" filled":""),inputmode:"numeric",autocomplete:"off",placeholder:ex.r});
+      rpIn.value=setData.reps||"";
+      rpIn.addEventListener("input",e=>{
+        if(!logs[wkIdx])logs[wkIdx]={};if(!logs[wkIdx][dayKey])logs[wkIdx][dayKey]={};
+        if(!logs[wkIdx][dayKey][ei])logs[wkIdx][dayKey][ei]={};if(!logs[wkIdx][dayKey][ei][si])logs[wkIdx][dayKey][ei][si]={};
+        logs[wkIdx][dayKey][ei][si].reps=e.target.value;
+        const r2=e.target.closest(".set-row");const kg2=r2.querySelector("input:first-of-type");
+        const done2=!!(e.target.value&&kg2&&kg2.value);
+        r2.className="set-row"+(done2?" done":"");r2.querySelector(".set-status").className="set-status"+(done2?" done":"");r2.querySelector(".set-status").textContent=done2?"✓":"—";
+        e.target.className="set-input"+(e.target.value?" filled":"");saveLogs();
+      });
+
+      const st=div("set-status"+(isDone?" done":""));st.textContent=isDone?"✓":"—";
+      row.append(sn,kgIn,rpIn,st);block.appendChild(row);
+    }
+    const sub=div("sub-tag");sub.textContent="💡 "+ex.sub;block.appendChild(sub);
+    container.appendChild(block);
+  });
+
+  // Session comments section
+  renderCommentSection(container, wkIdx, dayKey);
+}
+
+// ══════════════════════════════════════════════════
+// PAGE RENDERERS
+// ══════════════════════════════════════════════════
+function renderOverview(){
+  const p=document.getElementById("page-overview");p.innerHTML="";
+
+  // Hero
+  p.innerHTML=`
+  <div class="hero">
+    <div class="hero-badge">12-Week Fat Loss & Lean Muscle</div>
+    <h1 class="hero-title">Your Body,<br><span class="hero-accent">Your Program</span></h1>
+    <p class="hero-sub">Built for a Tongan woman · 32 yrs · 174cm · 83kg<br>Goal: Fat loss + lean muscle · 3 days/week</p>
+  </div>`;
+
+  // Stats
+  const sg=div("stat-grid");
+  [{v:"1,800",l:"Daily Calories",s:"~300 cal deficit"},{v:"150g",l:"Protein Target",s:"1.8g/kg"},{v:"3/wk",l:"Training Days",s:"PPL · Glute focus"},{v:"12 wks",l:"Program",s:"3 phases + deloads"}].forEach(st=>{
+    const c=div("stat-card");const v=div("stat-val");v.textContent=st.v;const l=el("div",{class:"stat-label"});l.textContent=st.l;const s=el("div",{class:"stat-sub"});s.textContent=st.s;c.append(v,l,s);sg.appendChild(c);
+  });
+  const totalLogged=Array.from({length:12}).filter((_,wi)=>weekVol(wi)>0).length;
+  const totalVolAll=Array.from({length:12}).reduce((a,_,wi)=>a+weekVol(wi),0);
+  const lc=div("stat-card");const lv=div("stat-val");lv.style.color="var(--purple)";lv.textContent=`${totalLogged}/12`;
+  const ll=el("div",{class:"stat-label"});ll.textContent="Weeks Logged";
+  const ls=el("div",{class:"stat-sub"});ls.textContent=totalVolAll>0?`${Math.round(totalVolAll/1000)}t lifted`:"Start logging!";
+  lc.append(lv,ll,ls);sg.appendChild(lc);p.appendChild(sg);
+
+  // Volume chart
+  if(totalLogged>0){
+    const vc=div("card");const vt=el("div",{});vt.style.cssText="font-size:14px;font-weight:700;margin-bottom:10px";vt.textContent="📈 Volume by Week";
+    const chart=div("vol-chart");
+    const maxV=Math.max(...Array.from({length:12}).map((_,wi)=>weekVol(wi)),1);
+    Array.from({length:12}).forEach((_,wi)=>{
+      const v=weekVol(wi);const pct=v/maxV;const col=phaseCol(WEEK_PHASE[wi]);
+      const bar=div("vol-bar"+(v>0?" has":""));bar.style.background=col;bar.style.height=v>0?Math.max(pct*44,4)+"px":"2px";chart.appendChild(bar);
+    });
+    const labels=div("vol-labels");
+    Array.from({length:12}).forEach((_,i)=>{const l=div("vol-label"+(weekVol(i)>0?" has":""));l.textContent=`W${i+1}`;labels.appendChild(l);});
+    vc.append(vt,chart,labels);p.appendChild(vc);
+  }
+
+  // Roadmap
+  const rt=el("div",{});rt.style.cssText="font-size:15px;font-weight:700;margin-bottom:12px;margin-top:4px";rt.textContent="📅 12-Week Roadmap";p.appendChild(rt);
+  const tl=div("timeline");
+  [{weeks:"1–3",name:"Foundation",color:"#4DBFA8",focus:"Build glute-mind connection. Master form."},{weeks:"4",name:"Deload",color:"#9A7070",focus:"50% volume. Walk, stretch, recover."},{weeks:"5–7",name:"Intensification",color:"#D4A853",focus:"Heavier loads. Progressive tension."},{weeks:"8",name:"Deload",color:"#9A7070",focus:"Flush fatigue. Reset nervous system."},{weeks:"9–11",name:"Peaking",color:"#E8705A",focus:"Heaviest weights. Chase PRs."},{weeks:"12",name:"Deload / Test",color:"#B07EC8",focus:"PR attempts. Assess transformation."}].forEach(ph=>{
+    const item=div("tl-item");const dot=div("tl-dot");dot.style.borderColor=ph.color;dot.style.background=ph.color+"44";
+    const card=div("tl-card");const wk=div("tl-wk");wk.style.color=ph.color;wk.textContent="Week "+ph.weeks;
+    const nm=div("tl-name");nm.textContent=ph.name;const fc=div("tl-focus");fc.textContent=ph.focus;card.append(wk,nm,fc);item.append(dot,card);tl.appendChild(item);
+  });p.appendChild(tl);
+
+  // Trainer note
+  const note=div("card card-rose");note.style.marginTop="12px";
+  note.innerHTML=`<div style="color:var(--rose);font-weight:800;margin-bottom:7px;font-size:14px">💪 Trainer's Note</div>
+  <p style="color:var(--muted);font-size:13px;line-height:1.75;margin:0">At 83kg with a fat loss + lean muscle goal, a modest 300 calorie deficit with 150g of protein daily is the sweet spot — enough to burn fat without sacrificing muscle. The Legs + Glutes session is your priority workout every week. Hip thrusts and RDLs are your most important exercises. Every week, try to add just a little more weight or one more rep. That is how the body changes.</p>`;
+  p.appendChild(note);
+
+  // Glute focus callout
+  const gc=div("card card-gold");gc.style.marginTop="0";
+  gc.innerHTML=`<div style="color:var(--gold);font-weight:800;margin-bottom:7px;font-size:14px">🍑 Glute Focus Priority</div>
+  <p style="color:var(--muted);font-size:13px;line-height:1.75;margin:0">Glutes are the largest muscle group and respond best to a mix of heavy compound movements (hip thrusts, RDLs, squats) AND isolation work (kickbacks, abduction). Train them with intention — squeeze at the top of every rep, slow the eccentric (lowering) phase, and prioritise progressive overload weekly.</p>`;
+  p.appendChild(gc);
+}
+
+function renderWorkout(){
+  const p=document.getElementById("page-workout");p.innerHTML="";
+  p.innerHTML=`<div class="page-title">💪 Workout Plan</div><div class="page-sub">Push / Pull / Legs · 3 days/week · Glute & Back emphasis</div>`;
+
+  // Split
+  const sc=div("card");const sl=div("section-label");sl.textContent="WEEKLY SPLIT";sc.appendChild(sl);
+  SPLIT.forEach(s=>{
+    const row=div("split-row");const day=div("split-day");day.textContent=s.day;
+    const info=div("");const sn=div("split-session");
+    sn.style.color=s.type==="legs"?"var(--rose)":s.type==="pull"?"var(--teal)":s.type==="push"?"var(--purple)":"var(--muted)";
+    sn.textContent=s.session;if(s.focus){const ft=el("span",{class:"focus-tag"},"🍑 Priority");sn.appendChild(ft);}
+    const sm=div("split-muscle");sm.textContent=s.muscles;info.append(sn,sm);row.append(day,info);sc.appendChild(row);
+  });p.appendChild(sc);
+
+  // Week selector
+  const wl=div("section-label");wl.textContent="SELECT WEEK";p.appendChild(wl);
+  const wg=div("week-grid");
+  Array.from({length:12}).forEach((_,wi)=>{
+    const col=phaseCol(WEEK_PHASE[wi]);const has=sessionVol(wi,workoutDay)>0;
+    const btn=el("button",{class:"week-btn"+(wi===workoutWeek?" active":"")+(has&&wi!==workoutWeek?" has-data":"")});
+    btn.textContent=`W${wi+1}`;if(wi===workoutWeek){btn.style.background=col;btn.style.borderColor=col;}else if(has){btn.style.borderColor=col;btn.style.color=col;}
+    btn.onclick=()=>{workoutWeek=wi;renderWorkout();};wg.appendChild(btn);
+  });p.appendChild(wg);
+
+  // Day selector
+  const dl=div("section-label");dl.textContent="SELECT SESSION";p.appendChild(dl);
+  const dg=div("day-grid");
+  Object.keys(WORKOUTS).forEach(d=>{
+    const btn=el("button",{class:"day-btn"+(d===workoutDay?" active":"")});
+    btn.textContent=d;btn.onclick=()=>{workoutDay=d;renderWorkout();};dg.appendChild(btn);
+  });p.appendChild(dg);
+
+  const lc=div("card card-rose");lc.style.padding="14px";
+  const lt=el("div",{});lt.style.cssText="font-size:14px;font-weight:800;color:var(--rose);margin-bottom:12px";lt.textContent=`📋 Week ${workoutWeek+1} · ${workoutDay}`;lc.appendChild(lt);
+  const la=div("");lc.appendChild(la);p.appendChild(lc);
+  renderLogger(la,workoutWeek,workoutDay);
+}
+
+function renderTracker(){
+  const p=document.getElementById("page-tracker");p.innerHTML="";
+  p.innerHTML=`<div class="page-title">📅 12-Week Tracker</div><div class="page-sub">Log every session · Track PRs · See your progress</div>`;
+
+  // Grid
+  const tg=div("tracker-grid");
+  Array.from({length:12}).forEach((_,wi)=>{
+    const phase=WEEK_PHASE[wi];const col=phaseCol(phase);const wv=weekVol(wi);
+    const card=el("button",{class:"wk-card"+(wi===trackerWeek?" active":"")});
+    card.style.borderColor=wi===trackerWeek?col:wv>0?col+"44":"var(--border)";
+    if(wi===trackerWeek)card.style.background=col+"18";
+    const wn=div("wk-num");wn.style.color=wi===trackerWeek?col:wv>0?col:"var(--muted)";wn.textContent=`Wk ${wi+1}`;
+    const wp=div("wk-phase");wp.textContent=phase.split(" ")[0];
+    const wvd=div("wk-vol"+(wv>0?" has":""));wvd.textContent=wv>0?`${(wv/1000).toFixed(1)}t`:"—";
+    const dots=div("wk-dots");
+    Object.keys(WORKOUTS).forEach(d=>{const dot=div("wk-dot"+(sessionVol(wi,d)>0?" done":""));dots.appendChild(dot);});
+    card.append(wn,wp,wvd,dots);card.onclick=()=>{trackerWeek=wi;renderTracker();};tg.appendChild(card);
+  });p.appendChild(tg);
+
+  // Week detail
+  const wphase=WEEK_PHASE[trackerWeek];const wcol=phaseCol(wphase);
+  const wd=div("wk-detail");wd.style.background=wcol+"18";wd.style.border=`1px solid ${wcol}33`;
+  const dr=el("div",{style:"display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px"});
+  const dl2=div("");
+  const dtt=div("wk-detail-title");dtt.style.color=wcol;dtt.textContent=`Week ${trackerWeek+1} — ${wphase}`;
+  const dtn=div("wk-detail-note");dtn.textContent=WEEK_PLAN[trackerWeek].note;dl2.append(dtt,dtn);
+  const dr2=el("div",{style:"text-align:right;flex-shrink:0"});
+  const wv2=weekVol(trackerWeek);
+  const dvv=el("div",{style:"font-size:16px;font-weight:700;color:var(--text)"});dvv.textContent=wv2>0?`${(wv2/1000).toFixed(1)}t`:"—";
+  const dds=el("div",{style:"font-size:12px;color:var(--rose)"});dds.textContent=`${weekDone(trackerWeek)}/3 done`;
+  dr2.append(dvv,dds);dr.append(dl2,dr2);wd.appendChild(dr);
+
+  const sb=div("session-btns");
+  Object.keys(WORKOUTS).forEach(day=>{
+    const v=sessionVol(trackerWeek,day);const done=v>0;
+    const btn=el("button",{class:"session-btn"+(day===trackerDay?" active":"")+(done?" has-data":"")});
+    btn.innerHTML=(done?"✓ ":"")+day+(done?` <span style="font-size:10px">${(v/1000).toFixed(1)}t</span>`:"");
+    btn.onclick=()=>{trackerDay=day;renderTracker();};sb.appendChild(btn);
+  });wd.appendChild(sb);p.appendChild(wd);
+
+  const lc=div("card");lc.style.cssText=`border-color:${wcol}44;padding:14px`;
+  const lt=el("div",{});lt.style.cssText=`font-size:14px;font-weight:800;color:${wcol};margin-bottom:12px`;lt.textContent=`Week ${trackerWeek+1} · ${trackerDay}`;lc.appendChild(lt);
+  const la=div("");lc.appendChild(la);p.appendChild(lc);
+  renderLogger(la,trackerWeek,trackerDay);
+
+  // PRs
+  const tracked=["Barbell Hip Thrust","Romanian Deadlift","Lat Pulldown","Seated Cable Row","Sumo Squat"];
+  const bests={};tracked.forEach(e=>{bests[e]={kg:0,wk:null};});
+  for(let wi=0;wi<12;wi++){const wk=logs[wi];if(!wk)continue;
+    Object.keys(WORKOUTS).forEach(day=>{const dl3=wk[day];if(!dl3)return;
+      WORKOUTS[day].forEach((ex,ei)=>{if(!tracked.includes(ex.e))return;const es=dl3[ei];if(!es)return;
+        Object.values(es).forEach(s=>{if(!s)return;const kg=parseFloat(s.kg)||0;if(kg>bests[ex.e].kg)bests[ex.e]={kg,wk:wi+1};});
+      });
+    });
+  }
+  if(Object.values(bests).some(b=>b.kg>0)){
+    const prc=div("card card-gold");prc.style.marginTop="10px";
+    const prt=el("div",{});prt.style.cssText="color:var(--gold);font-weight:800;font-size:14px;margin-bottom:10px";prt.textContent="🏆 Personal Records";
+    prc.appendChild(prt);
+    Object.entries(bests).filter(([,b])=>b.kg>0).forEach(([ex,b])=>{
+      const row=div("pr-row");const exn=div("pr-ex");exn.textContent=ex;
+      const rhs=el("div",{style:"display:flex;align-items:center;gap:6px"});
+      const val=div("pr-val");val.textContent=`${b.kg}kg`;
+      const wkl=el("div",{style:"font-size:11px;color:var(--muted)"});wkl.textContent=`Wk ${b.wk}`;
+      rhs.append(val,wkl);row.append(exn,rhs);prc.appendChild(row);
+    });p.appendChild(prc);
+  }
+
+  // Volume chart
+  const vc=div("card");vc.style.marginTop="10px";
+  const vt=el("div",{});vt.style.cssText="font-size:14px;font-weight:700;margin-bottom:10px";vt.textContent="📊 Volume by Week";
+  const chart=div("vol-chart");
+  const maxV=Math.max(...Array.from({length:12}).map((_,wi)=>weekVol(wi)),1);
+  Array.from({length:12}).forEach((_,wi)=>{
+    const v=weekVol(wi);const col=phaseCol(WEEK_PHASE[wi]);
+    const bar=div("vol-bar"+(v>0?" has":""));bar.style.background=col;bar.style.height=v>0?Math.max((v/maxV)*44,4)+"px":"2px";
+    bar.style.cursor="pointer";bar.onclick=()=>{trackerWeek=wi;renderTracker();};chart.appendChild(bar);
+  });
+  const labels=div("vol-labels");
+  Array.from({length:12}).forEach((_,i)=>{const l=div("vol-label"+(weekVol(i)>0?" has":""));l.textContent=`W${i+1}`;l.style.cursor="pointer";l.onclick=()=>{trackerWeek=i;renderTracker();};labels.appendChild(l);});
+  vc.append(vt,chart,labels);p.appendChild(vc);
+}
+
+function renderDiet(){
+  const p=document.getElementById("page-diet");p.innerHTML=`
+  <div class="page-title">🥗 Diet Plan</div>
+  <div class="page-sub">1,800 kcal/day · 150g protein · structured around training</div>
+  <div class="card">
+    <div class="section-label">DAILY MACROS</div>
+    <div class="mtable-wrap"><table class="mtable">
+    <thead><tr><th>Macro</th><th>Target</th><th>Notes</th></tr></thead>
+    <tbody>${MACROS.map(m=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join("")}</tbody>
+    </table></div>
+  </div>
+  <div class="section-label" style="margin-top:4px">MEAL TIMING</div>
+  ${MEAL_TIMING.map(m=>`<div class="timing-row"><div class="timing-time">${m[0]}</div><div><div class="timing-label">${m[1]}</div><div class="timing-note">${m[2]}</div></div></div>`).join("")}
+  <div class="card" style="margin-top:12px">
+    <div class="section-label">SUPPLEMENT STACK</div>
+    <div class="mtable-wrap"><table class="mtable">
+    <thead><tr><th>Supplement</th><th>Dose</th><th>Timing</th><th>Why</th></tr></thead>
+    <tbody>${SUPPS.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td>${s[3]}</td></tr>`).join("")}</tbody>
+    </table></div>
+  </div>
+  <div class="card card-teal">
+    <div style="color:var(--teal);font-weight:700;margin-bottom:6px">💧 Hydration</div>
+    <div style="color:var(--muted);font-size:13px;line-height:1.75">Minimum <strong style="color:var(--teal)">2.5–3 litres/day</strong>. More on training days and in hot weather. Start every morning with 500ml before eating. Staying hydrated directly supports fat metabolism and workout performance.</div>
+  </div>
+  <div class="card card-rose">
+    <div style="color:var(--rose);font-weight:700;margin-bottom:6px">🌺 Note on Tongan Diet</div>
+    <div style="color:var(--muted);font-size:13px;line-height:1.75">Traditional Tongan foods like taro, cassava, breadfruit, lu sipi (coconut cream spinach) and fresh fish are excellent for this plan. Taro and cassava are great carb sources. Fresh fish provides lean protein and omega-3s. Coconut cream is calorie-dense — use in moderation.</div>
+  </div>`;
+}
+
+function renderMicros(){
+  const p=document.getElementById("page-micros");p.innerHTML=`
+  <div class="page-title">🔬 Micronutrients</div>
+  <div class="page-sub">Key vitamins & minerals for women in training</div>
+  <div class="card">
+    <div class="mtable-wrap"><table class="mtable">
+    <thead><tr><th>Nutrient</th><th>Target</th><th>Food Sources</th><th>Women's Note</th></tr></thead>
+    <tbody>${MICROS.map(m=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td><td>${m[3]}</td></tr>`).join("")}</tbody>
+    </table></div>
+  </div>
+  <div class="card card-purple">
+    <div style="color:var(--purple);font-weight:800;margin-bottom:10px">⚠️ Women's Deficiency Watch</div>
+    ${[["Iron","Menstruating women lose iron monthly — fatigue, poor endurance. Get blood levels tested."],["Vitamin D","Pacific Islander populations can have lower serum D despite sun exposure. Supplement."],["Calcium","Undereating on a deficit often leads to insufficient calcium — bones and muscle both suffer."],["Folate","Important for cell repair and energy — leafy greens and legumes are your best friends."]].map(([n,t])=>`<div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px"><span style="color:var(--purple);font-weight:700;min-width:85px;font-size:12px">${n}</span><span style="color:var(--muted)">${t}</span></div>`).join("")}
+  </div>`;
+}
+
+function renderRecipes(){
+  const p=document.getElementById("page-recipes");p.innerHTML="";
+  p.innerHTML=`<div class="page-title">🍽 Recipes</div><div class="page-sub">High-protein, macro-balanced. Tap to expand.</div>`;
+  const tabs=div("cat-tabs");
+  [{k:"breakfasts",l:"🌅 Breakfasts"},{k:"lunches",l:"🍽 Mains"},{k:"snacks",l:"🥜 Snacks"}].forEach(({k,l})=>{
+    const btn=el("button",{class:"cat-tab"+(k===recipeCat?" active":"")});btn.textContent=l;
+    btn.onclick=()=>{recipeCat=k;renderRecipes();};tabs.appendChild(btn);
+  });p.appendChild(tabs);
+
+  RECIPES[recipeCat].forEach(r=>{
+    const card=div("recipe-card");
+    const hdr=div("recipe-header");
+    hdr.onclick=()=>{const body=card.querySelector(".recipe-body");body.classList.toggle("open");hdr.querySelector(".recipe-toggle").textContent=body.classList.contains("open")?"▲":"▼";};
+    const left=div("");
+    const top=el("div",{style:"display:flex;align-items:center;gap:8px;margin-bottom:3px"});
+    const em=el("span",{});em.textContent=r.tag;const nm=el("span",{class:"recipe-name"});nm.textContent=r.name;top.append(em,nm);
+    if(r.veg){const vp=el("span",{class:"pill pill-teal"});vp.textContent="Plant";top.appendChild(vp);}
+    const meta=el("div",{style:"display:flex;gap:10px"});
+    const kc=el("span",{class:"recipe-kcal"});kc.textContent=r.cal+" kcal";const pr=el("span",{class:"recipe-prep"});pr.textContent="⏱ "+r.prep;meta.append(kc,pr);
+    const mb=div("macro-badges");
+    const mp=el("span",{class:"mbadge mbadge-p"});mp.textContent=`P ${r.p}g`;const mc=el("span",{class:"mbadge mbadge-c"});mc.textContent=`C ${r.c}g`;const mf=el("span",{class:"mbadge mbadge-f"});mf.textContent=`F ${r.f}g`;mb.append(mp,mc,mf);
+    left.append(top,meta,mb);const tog=el("span",{class:"recipe-toggle"});tog.textContent="▼";hdr.append(left,tog);card.appendChild(hdr);
+
+    const body=div("recipe-body");
+    const is=div("recipe-section-lbl");is.textContent="INGREDIENTS";
+    const ul=el("ul",{class:"recipe-list"});r.ing.forEach(i=>{const li=el("li",{});li.textContent=i;ul.appendChild(li);});body.append(is,ul);
+    const ms=div("recipe-section-lbl");ms.textContent="METHOD";
+    const ol=el("ol",{class:"recipe-list"});r.steps.forEach(s=>{const li=el("li",{});li.textContent=s;ol.appendChild(li);});body.append(ms,ol);
+    card.appendChild(body);p.appendChild(card);
+  });
+}
+
+function renderShopping(){
+  const p=document.getElementById("page-shopping");p.innerHTML="";
+  const total=Object.values(SHOPPING).flat().length;
+  const done=Object.values(shopping).filter(Boolean).length;
+  p.innerHTML=`<div class="page-title">🛒 Shopping List</div>`;
+  const sub=el("div",{class:"page-sub"});sub.textContent=`${done}/${total} checked · Week 1 · ~$110–140`;p.appendChild(sub);
+  const clr=el("button",{class:"btn-clear"});clr.style.marginBottom="12px";clr.textContent="Clear all";clr.onclick=()=>{shopping={};saveShop();renderShopping();};p.appendChild(clr);
+
+  Object.entries(SHOPPING).forEach(([cat,items])=>{
+    const card=div("card");const cl=div("section-label");cl.textContent=cat;card.appendChild(cl);
+    items.forEach(item=>{
+      const key=cat+":"+item;const isChecked=!!shopping[key];
+      const row=div("shop-item");
+      const chk=div("shop-check"+(isChecked?" checked":""));const inner=div("shop-check-inner");inner.textContent="✓";chk.appendChild(inner);
+      const lbl=el("span",{class:"shop-text"+(isChecked?" checked":"")});lbl.textContent=item;
+      row.onclick=()=>{shopping[key]=!shopping[key];saveShop();chk.classList.toggle("checked",!!shopping[key]);inner.style.display=shopping[key]?"block":"none";lbl.classList.toggle("checked",!!shopping[key]);sub.textContent=`${Object.values(shopping).filter(Boolean).length}/${total} checked · Week 1 · ~$110–140`;};
+      row.append(chk,lbl);card.appendChild(row);
+    });p.appendChild(card);
+  });
+}
+
+function renderSchedule(){
+  const p=document.getElementById("page-schedule");p.innerHTML=`<div class="page-title">📆 Week 1 Schedule</div><div class="page-sub">Training + nutrition · day by day</div>`;
+  WEEK1.forEach(day=>{
+    const isRest=day.session.includes("Rest")||day.session.includes("Cardio");
+    const card=div("sch-card");
+    const top=el("div",{style:"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2px"});
+    const dy=div("sch-day");dy.textContent=day.day;
+    const badge=el("span",{class:"pill "+(isRest?"pill-muted":day.session.includes("Legs")?"pill-rose":day.session.includes("Push")?"pill-muted":"pill-teal")});
+    badge.textContent=isRest?"Recovery":day.session.includes("Legs")?"🍑 Priority":"Training";
+    top.append(dy,badge);card.appendChild(top);
+    const sn=div("sch-session");sn.textContent=day.session;card.appendChild(sn);
+    const ml=div("sch-meals");const mll=div("section-label");mll.textContent="MEALS";ml.appendChild(mll);
+    day.meals.forEach((meal,i)=>{const mr=div("sch-meal");const ico=el("span",{});ico.textContent=["☀️","🌤","🍎","🌙","🌛"][i];const mn=el("span",{});mn.textContent=meal;mr.append(ico,mn);ml.appendChild(mr);});
+    card.appendChild(ml);p.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════════
+function switchTab(tab){
+  currentTab=tab;
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  document.querySelectorAll(".tnav-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  document.querySelectorAll(".bnav-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  window.scrollTo(0,0);
+  const renders={overview:renderOverview,workout:renderWorkout,tracker:renderTracker,diet:renderDiet,recipes:renderRecipes,shopping:renderShopping,micros:renderMicros,schedule:renderSchedule,wellness:renderWellness};
+  if(renders[tab])renders[tab]();
+}
+
+
+// ══════════════════════════════════════════════════════════════════════
+// EXERCISE INSTRUCTIONS + ANIMATIONS
+// ══════════════════════════════════════════════════════════════════════
+const EX_INFO = {
+  "Barbell Hip Thrust":{
+    muscles:["🍑 Glutes","🦵 Hamstrings","Core"],
+    steps:[
+      {t:"Set up",d:"Sit on the floor with your <strong>upper back against a bench</strong>. Roll a barbell over your hips — pad it with a foam pad or towel."},
+      {t:"Position",d:"Plant feet <strong>hip-width apart</strong>, about 30cm from your glutes. Knees should be at ~90° when at the top."},
+      {t:"Brace",d:"Take a breath in, <strong>brace your core</strong>, and tuck your chin slightly."},
+      {t:"Drive",d:"<strong>Push through your heels</strong>, squeeze your glutes and drive your hips up until your body forms a straight line from shoulders to knees."},
+      {t:"Squeeze",d:"<strong>Pause at the top for 1 second</strong>, squeezing your glutes as hard as you can. Don't hyperextend your lower back."},
+      {t:"Lower",d:"Slowly lower your hips back down in <strong>2–3 seconds</strong>. Don't let the weight crash down. Repeat."},
+    ],
+    cues:["🔑 Drive through your HEELS, not your toes","🍑 Squeeze glutes at the top — really squeeze!","📐 Keep your chin tucked — prevents lower back arch","🌬️ Exhale as you push up, inhale as you lower"],
+    anim:"hip_thrust"
+  },
+  "Romanian Deadlift":{
+    muscles:["🍑 Glutes","🦵 Hamstrings","🔙 Lower Back"],
+    steps:[
+      {t:"Start position",d:"Stand with feet hip-width, holding dumbbells or a barbell in front of your thighs with an <strong>overhand grip</strong>."},
+      {t:"Hinge",d:"Push your hips <strong>back behind you</strong> (not down). Think: 'close a car door with my hips'."},
+      {t:"Lower",d:"Lower the weight along your legs, feeling a <strong>deep stretch in your hamstrings</strong>. Keep the bar close to your body."},
+      {t:"Depth",d:"Go until you feel a strong stretch — usually mid-shin. <strong>Don't round your lower back</strong> to go lower."},
+      {t:"Drive up",d:"<strong>Push the floor away</strong> with your feet, drive hips forward, squeeze glutes to stand tall."},
+      {t:"Reset",d:"Breathe, brace, and repeat. Control is everything on this exercise."},
+    ],
+    cues:["🔑 Hips BACK — not knees down","📏 Keep the bar/DBs close to your legs the whole way","🚫 Never round your lower back — stop before that point","🦵 Feel the hamstring stretch? That's right"],
+    anim:"rdl"
+  },
+  "Sumo Squat":{
+    muscles:["🍑 Glutes","🦵 Inner Thighs (Adductors)","Quads"],
+    steps:[
+      {t:"Stance",d:"Take a <strong>wide stance</strong> — feet 2× shoulder-width, toes pointed out at 45°."},
+      {t:"Hold weight",d:"Hold a dumbbell or kettlebell at your chest with both hands, or a barbell on your back."},
+      {t:"Brace",d:"Big breath in, <strong>brace your core and chest up</strong>. Imagine you're about to take a punch."},
+      {t:"Descend",d:"Sit straight <strong>down between your heels</strong> — not forward. Push your knees out over your toes."},
+      {t:"Bottom",d:"Aim for thighs <strong>parallel or below</strong>. Knees should track over your pinky toes."},
+      {t:"Drive up",d:"<strong>Push the floor apart</strong> with both feet, squeeze your glutes and inner thighs to stand. Exhale on the way up."},
+    ],
+    cues:["👣 Push knees OUT the whole time","⬇️ Sit DOWN not forward","🍑 Squeeze glutes hard at the top","💨 Breathe in down, breathe out up"],
+    anim:"sumo_squat"
+  },
+  "Cable Kickback":{
+    muscles:["🍑 Glutes (max)","🦵 Hamstrings"],
+    steps:[
+      {t:"Set up",d:"Attach an ankle cuff to a low cable machine. <strong>Face the machine</strong>, holding it lightly for balance."},
+      {t:"Stance",d:"Stand on one leg, slight bend in the standing knee. Hinge forward slightly at the hips."},
+      {t:"Kick back",d:"<strong>Kick the cuffed leg back and up</strong>, squeezing your glute at the top. Your leg should be straight but not locked."},
+      {t:"Peak",d:"At the top, <strong>pause for 1 second</strong> and really squeeze — make your glute hard as a rock."},
+      {t:"Return",d:"Slowly bring the leg back to the start in <strong>2 seconds</strong>. Don't let the weight swing it back."},
+      {t:"Reps",d:"Complete all reps on one side, then switch. Keep your hips square — don't rotate."},
+    ],
+    cues:["🚫 Don't use momentum — squeeze, don't swing","📐 Keep hips square — no twisting","🍑 It's about glute squeeze, not how high you kick","🦵 Slight hinge forward activates glute better"],
+    anim:"kickback"
+  },
+  "Leg Curl (Machine)":{
+    muscles:["🦵 Hamstrings","🍑 Glutes (secondary)"],
+    steps:[
+      {t:"Set up",d:"Adjust the machine so the pad rests just <strong>above your heels</strong>. Lie face down, hips flat on the bench."},
+      {t:"Grip",d:"Hold the handles firmly. <strong>Don't let your hips rise</strong> off the bench — this is key."},
+      {t:"Curl",d:"Breathe out and <strong>curl your heels toward your glutes</strong> in a smooth arc. Pause at the top."},
+      {t:"Squeeze",d:"At full contraction, your heels should be close to your glutes. <strong>Hold for 1 second</strong>."},
+      {t:"Lower",d:"Slowly lower in <strong>3 seconds</strong>. Control is what builds muscle — don't let it drop."},
+    ],
+    cues:["🚫 Hips stay DOWN on the bench","⏱️ 3 seconds down = more muscle","🦵 Feel the hamstring burn? Perfect","💪 Full range of motion every rep"],
+    anim:"leg_curl"
+  },
+  "Abduction Machine":{
+    muscles:["🍑 Glutes (medius)","🦵 Hip Abductors","Outer Thigh"],
+    steps:[
+      {t:"Set up",d:"Sit tall in the abduction machine, pad against your outer knees. <strong>Adjust range to feel a stretch</strong> at the start."},
+      {t:"Posture",d:"Sit with your <strong>back flat against the seat</strong>, core braced. Don't slouch — this changes which muscles work."},
+      {t:"Push out",d:"<strong>Slowly push your knees apart</strong> as far as the machine allows. Lead with your outer glutes, not just your legs."},
+      {t:"Peak",d:"At full width, <strong>squeeze for 2 seconds</strong>. You should feel it in your outer glutes and hips."},
+      {t:"Return",d:"Slowly bring knees back together in <strong>2–3 seconds</strong>. Don't let the weight slam back."},
+    ],
+    cues:["🎯 Think: push from your OUTER GLUTE","⏱️ Slow and controlled = results","🪑 Sit tall — don't slump in the seat","🔁 High reps (20+) work best here"],
+    anim:"abduction"
+  },
+  "Standing Calf Raise":{
+    muscles:["🦵 Calves (Gastrocnemius)","Soleus"],
+    steps:[
+      {t:"Position",d:"Stand on the edge of a step or calf raise machine, heels hanging off. Hold dumbbells or use machine for resistance."},
+      {t:"Lower",d:"Drop your heels <strong>below the step level</strong> for a full stretch. Feel the calf lengthen."},
+      {t:"Rise",d:"Push up onto your tiptoes as <strong>high as possible</strong>. Really reach for the sky."},
+      {t:"Pause",d:"Hold at the top for <strong>1–2 seconds</strong>, squeezing calves."},
+      {t:"Lower slowly",d:"Take <strong>3 seconds to lower</strong>. Calves need slow eccentrics to grow."},
+    ],
+    cues:["📏 Full range — all the way up AND down","⏱️ Slow lowering is essential","🔁 Calves recover fast — push the reps","🦵 Point toes straight for gastrocnemius"],
+    anim:"calf_raise"
+  },
+  "Dumbbell Shoulder Press":{
+    muscles:["💪 Shoulders (Anterior + Medial Delt)","Triceps","Upper Chest"],
+    steps:[
+      {t:"Seat",d:"Sit on an adjustable bench set to <strong>90° or slightly reclined</strong>. Hold dumbbells at shoulder height, palms facing forward."},
+      {t:"Brace",d:"Big breath in, <strong>brace your core</strong>. Don't arch excessively — keep ribs down."},
+      {t:"Press",d:"<strong>Press the dumbbells up and slightly in</strong>, so they nearly touch at the top. Arms should be straight but not locked."},
+      {t:"Lower",d:"Slowly lower in <strong>2 seconds</strong>, back to shoulder height. Elbows at roughly 75° angle."},
+      {t:"Repeat",d:"Press again immediately. Breathe out on the press, in on the way down."},
+    ],
+    cues:["📐 Don't flare elbows out too wide","🚫 Don't shrug your shoulders up","💨 Exhale on press, inhale on lower","⬇️ Full range — bring DBs back to shoulder level"],
+    anim:"shoulder_press"
+  },
+  "Incline DB Press":{
+    muscles:["💪 Upper Chest","Shoulders","Triceps"],
+    steps:[
+      {t:"Setup",d:"Set bench to <strong>30–45°</strong>. Lie back, dumbbells at chest level, elbows at 75° from your body."},
+      {t:"Grip",d:"Palms facing forward. Wrists stacked over elbows — <strong>don't let wrists bend back</strong>."},
+      {t:"Press",d:"Press the dumbbells up in a <strong>slight arc</strong>, meeting above your upper chest. Don't crash them together."},
+      {t:"Lower",d:"Lower in <strong>3 seconds</strong>, feeling the chest stretch at the bottom."},
+      {t:"Repeat",d:"Don't let the dumbbells drop past your chest level at the bottom."},
+    ],
+    cues:["📐 45° bench = most upper chest activation","🤝 DBs almost touch at top — don't crash","⏱️ 3 seconds down builds the chest","🚫 No bouncing off the chest"],
+    anim:"incline_press"
+  },
+  "Lateral Raise":{
+    muscles:["💪 Medial Deltoid","Shoulder Caps"],
+    steps:[
+      {t:"Stand",d:"Stand with feet hip-width, holding light dumbbells at your sides. <strong>Slight bend in elbows</strong>."},
+      {t:"Raise",d:"<strong>Raise both arms out to the side</strong> until they're parallel with the floor. Lead with your elbows, not your wrists."},
+      {t:"Tilt",d:"<strong>Tilt your pinky up slightly</strong> at the top — like pouring water from a jug. This maximises medial delt activation."},
+      {t:"Lower",d:"<strong>Lower slowly in 3 seconds</strong>. This is where the muscle growth happens."},
+    ],
+    cues:["🎯 Lead with ELBOWS not hands","🪣 Pinky up at top = more shoulder","⬆️ No higher than shoulder height","⏱️ Slow down = better results"],
+    anim:"lateral_raise"
+  },
+  "Cable Chest Fly":{
+    muscles:["💪 Chest (Pec Major)","Anterior Deltoid"],
+    steps:[
+      {t:"Setup",d:"Set cables at shoulder height. Stand in the centre, one handle in each hand. <strong>Lean forward slightly</strong>."},
+      {t:"Arms out",d:"Start with arms open wide, slight bend in elbows. <strong>Feel the chest stretch</strong>."},
+      {t:"Bring together",d:"<strong>Squeeze the handles together</strong> in front of your chest, like hugging a big tree. Elbows stay slightly bent."},
+      {t:"Squeeze",d:"When hands meet, <strong>pause and squeeze your chest hard</strong> for 1 second."},
+      {t:"Open slowly",d:"Slowly open arms back out in <strong>3 seconds</strong>, feeling the chest stretch again."},
+    ],
+    cues:["🌳 Imagine hugging a barrel","🚫 Don't straighten arms completely","💪 Squeeze at the middle — peak contraction","⏱️ Slow the opening phase"],
+    anim:"chest_fly"
+  },
+  "Tricep Pushdown (Rope)":{
+    muscles:["💪 Triceps (all 3 heads)"],
+    steps:[
+      {t:"Setup",d:"Attach rope to a high cable. <strong>Stand close</strong>, elbows tucked at your sides at 90°."},
+      {t:"Push",d:"<strong>Push the rope down</strong>, pulling the ends apart slightly as you reach the bottom."},
+      {t:"Lockout",d:"Fully extend your arms at the bottom — <strong>really squeeze the triceps</strong>."},
+      {t:"Return",d:"Allow elbows to flex back to 90° slowly — <strong>2–3 seconds</strong>."},
+    ],
+    cues:["📌 ELBOWS stay glued to your sides","↕️ Only your forearms move","💪 Full extension at the bottom","⏱️ Slow return = more muscle"],
+    anim:"pushdown"
+  },
+  "Front Raise":{
+    muscles:["💪 Anterior Deltoid","Upper Chest"],
+    steps:[
+      {t:"Hold",d:"Hold dumbbells in front of your thighs, palms facing back."},
+      {t:"Raise",d:"<strong>Lift one or both arms straight forward</strong> to shoulder height. Keep a slight elbow bend."},
+      {t:"Pause",d:"Hold at shoulder height for <strong>1 second</strong>."},
+      {t:"Lower",d:"Bring down slowly in <strong>2 seconds</strong>. Control, no swinging."},
+    ],
+    cues:["⬆️ Only to shoulder height — no higher","🚫 Don't swing your body for momentum","💪 Slow and controlled every rep"],
+    anim:"front_raise"
+  },
+  "Lat Pulldown":{
+    muscles:["🔙 Lats (V-taper)","Biceps","Rear Delts"],
+    steps:[
+      {t:"Grip",d:"Grip the bar just <strong>wider than shoulder-width</strong>. Overhand grip. Lock thighs under the pads."},
+      {t:"Lean back",d:"<strong>Lean back 15–20°</strong> and pull your chest up toward the bar. This sets your lat up for maximum activation."},
+      {t:"Pull",d:"<strong>Pull the bar to your upper chest</strong>, driving elbows down and back. Think: elbows to your back pockets."},
+      {t:"Squeeze",d:"At the bottom, <strong>squeeze your lats for 1 second</strong> — they're the muscles just under your armpits."},
+      {t:"Return",d:"Let the bar rise slowly in <strong>2–3 seconds</strong>, feeling a full lat stretch at the top."},
+    ],
+    cues:["🎯 Think: ELBOWS to back pockets","🔙 Pull to your CHEST not your chin","⏱️ Slow the way up for more stretch","💪 Feel it in your lats, not your arms"],
+    anim:"lat_pulldown"
+  },
+  "Seated Cable Row":{
+    muscles:["🔙 Mid Back (Rhomboids)","Lats","Biceps"],
+    steps:[
+      {t:"Sit",d:"Sit upright with feet on the platform, slight knee bend. Grip the handle with arms extended — <strong>feel a mid-back stretch</strong>."},
+      {t:"Row",d:"<strong>Pull the handle to your lower chest/upper belly</strong>, driving your elbows back as far as possible."},
+      {t:"Squeeze",d:"At the end position, <strong>squeeze your shoulder blades together</strong> and hold for 1 second."},
+      {t:"Return",d:"Slowly reach forward again in <strong>2–3 seconds</strong>. Let your shoulder blades spread apart at the front."},
+    ],
+    cues:["🪑 Sit TALL — no slumping","🦋 Squeeze shoulder blades together at the back","🔙 Elbows go BACK not out","⏱️ Slow extension = more back muscle"],
+    anim:"cable_row"
+  },
+  "Single-Arm DB Row":{
+    muscles:["🔙 Lats","Mid Back","Biceps"],
+    steps:[
+      {t:"Setup",d:"Place one hand and the same-side knee on a bench. Back <strong>flat and parallel to the floor</strong>. Hold dumbbell in other hand."},
+      {t:"Hang",d:"Let the dumbbell hang straight down. <strong>Feel your lat stretch</strong>."},
+      {t:"Row",d:"<strong>Pull the dumbbell toward your hip</strong> (not your shoulder), driving your elbow straight back and up."},
+      {t:"Squeeze",d:"At the top, <strong>pause and squeeze your back</strong> — elbow should be above your back."},
+      {t:"Lower",d:"Slowly lower in <strong>2 seconds</strong>. Full hang at the bottom."},
+    ],
+    cues:["🎯 Elbow goes to HIP not shoulder","🔙 Think: 'start a lawn mower'","🚫 Don't twist your torso to lift more","⏱️ Full hang at the bottom"],
+    anim:"db_row"
+  },
+  "Face Pull":{
+    muscles:["🔙 Rear Delts","Rotator Cuff","Upper Traps"],
+    steps:[
+      {t:"Setup",d:"Set cable at <strong>face height</strong>. Use a rope attachment. Step back a few paces."},
+      {t:"Pull",d:"<strong>Pull the rope toward your face</strong>, separating the ends as you pull. Elbows should go high — level with or above your ears."},
+      {t:"External rotate",d:"At the end, your hands should be <strong>beside your ears</strong>, like a 'double bicep' pose."},
+      {t:"Return",d:"Slowly return in 2 seconds. Keep tension throughout."},
+    ],
+    cues:["🎯 Pull to your FACE — not chin or chest","💪 Elbows HIGH — shoulder height or above","🔄 External rotation = healthy shoulders","⚖️ Light weight, high reps for this one"],
+    anim:"face_pull"
+  },
+  "Stiff-Leg Deadlift":{
+    muscles:["🍑 Glutes","🦵 Hamstrings","🔙 Lower Back"],
+    steps:[
+      {t:"Stand",d:"Stand with feet hip-width, dumbbells in front. <strong>Keep legs nearly straight</strong> (soft knee — not locked)."},
+      {t:"Hinge",d:"Push hips back and hinge forward, lowering the weights along your legs. <strong>Feel the hamstrings load up</strong>."},
+      {t:"Depth",d:"Lower until you feel a <strong>strong hamstring stretch</strong>, usually around mid-shin."},
+      {t:"Drive",d:"<strong>Push hips forward</strong> to return to standing. Squeeze glutes at the top."},
+    ],
+    cues:["🦵 Legs stay nearly straight the whole time","🔙 Back flat — neutral spine always","🍑 Squeeze at the top","📏 Bar/DBs stay CLOSE to your legs"],
+    anim:"rdl"
+  },
+  "Incline DB Curl":{
+    muscles:["💪 Biceps (long head)","Forearms"],
+    steps:[
+      {t:"Setup",d:"Set bench to 45–60°. Sit back with dumbbells hanging at your sides, palms forward."},
+      {t:"Curl",d:"<strong>Curl both dumbbells up</strong> toward your shoulders. Keep elbows back — don't let them swing forward."},
+      {t:"Squeeze",d:"At the top, <strong>squeeze biceps hard</strong> for 1 second."},
+      {t:"Lower",d:"Slowly lower in <strong>3 seconds</strong>, letting the bicep fully stretch at the bottom."},
+    ],
+    cues:["📌 Elbows stay BACK — don't swing","⏱️ 3 seconds down = peak stretch","💪 Full extension at the bottom","🔁 Incline angle = more bicep stretch"],
+    anim:"curl"
+  },
+  "Reverse Fly (Pec Deck)":{
+    muscles:["🔙 Rear Delts","Rhomboids","Upper Back"],
+    steps:[
+      {t:"Setup",d:"Sit facing the pad of a pec deck, chest against it. Grip handles with elbows slightly bent."},
+      {t:"Pull back",d:"<strong>Pull the handles back and wide</strong>, squeezing your shoulder blades together."},
+      {t:"Squeeze",d:"At the end, <strong>hold for 2 seconds</strong>. Feel it in the back of your shoulders."},
+      {t:"Return",d:"Slowly bring handles back together in <strong>2–3 seconds</strong>."},
+    ],
+    cues:["🦋 Squeeze shoulder blades — not just arms","🚫 Don't use heavy weight — technique first","⏱️ Slow and controlled every rep","🔙 Feel it in REAR DELTS, not traps"],
+    anim:"reverse_fly"
+  },
+};
+
+
+// ══════════════════════════════════════════════════════════════════════
+// DEMO MODAL
+// ══════════════════════════════════════════════════════════════════════
+
+function showDemo(exName){
+  const info=EX_INFO[exName];
+  if(!info)return;
+  const modal=document.getElementById("demo-modal");
+  modal.querySelector(".demo-title").textContent=exName;
+
+  // Muscle tags
+  const tagsEl=modal.querySelector(".demo-tags");
+  tagsEl.innerHTML="";
+  info.muscles.forEach(m=>{const s=document.createElement("span");s.className="pill pill-rose";s.style.fontSize="11px";s.textContent=m;tagsEl.appendChild(s);});
+
+  // How-to steps
+  const htEl=modal.querySelector(".howto-steps");
+  htEl.innerHTML="";
+  info.steps.forEach((step,i)=>{
+    htEl.innerHTML+=`<div class="howto-step"><div class="howto-num">${i+1}</div><div class="howto-text"><strong>${step.t}:</strong> ${step.d}</div></div>`;
+  });
+
+  // Coaching cues
+  const cueEl=modal.querySelector(".cues-list");
+  cueEl.innerHTML="";
+  info.cues.forEach(c=>{cueEl.innerHTML+=`<div class="cue-item"><span class="cue-icon">${c.substring(0,2)}</span><span>${c.substring(2)}</span></div>`;});
+
+  modal.classList.add("open");
+  document.body.style.overflow="hidden";
+}
+
+
+function closeDemo(){
+  document.getElementById("demo-modal").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+// Close on backdrop click — called after DOM ready via init()
+function initModalListener(){
+  const m=document.getElementById("demo-modal");
+  if(m){m.addEventListener("click",function(e){
+    if(e.target===this||e.target===this.querySelector(".demo-backdrop"))closeDemo();
+  });}
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// WELLNESS TAB
+// ══════════════════════════════════════════════════════════════════════
+let wellnessMode="energy", energyLevel="medium", cyclePhase="follicular";
+let activeSymptoms=new Set();
+
+const CYCLE_ADVICE={
+  menstrual:{
+    label:"Period Week",icon:"🌸",day:"Days 1–5",
+    energy:"Usually lowest — oestrogen and progesterone both drop. Fatigue, cramps, and mood changes are completely normal.",
+    workout:{
+      title:"How to train on your period",
+      advice:"You don't have to skip the gym — but you get to choose your intensity. Movement often reduces cramps by increasing blood flow and releasing endorphins.",
+      mods:[
+        {orig:"Barbell Hip Thrust — 4×10 heavy",newEx:"Bodyweight or Light Hip Thrust — 3×15",why:"Reduces lower back pressure. Still activates glutes without straining."},
+        {orig:"Romanian Deadlift — 3×10",newEx:"Cat-Cow + Bird Dog (floor work)",why:"Hip hinge pattern with zero load. Keeps posterior chain active."},
+        {orig:"Full session 60 min",newEx:"20–30 min gentle session",why:"Short workouts are still 100% effective. Quality over quantity today."},
+        {orig:"Heavy compound lifts",newEx:"Cable work + isolation exercises",why:"Cable machines allow seated or supported positions — easier on cramps."},
+      ]
+    },
+    nutrition:[
+      "🍫 Dark chocolate (70%+) — magnesium for cramps + iron",
+      "🐟 Salmon — omega-3s reduce prostaglandins (cramp chemicals)",
+      "🫘 Lentils + spinach — iron to replace what you lose",
+      "🍌 Bananas — potassium eases bloating and muscle cramps",
+      "🫖 Ginger tea — natural anti-inflammatory, reduces cramp severity",
+      "❌ Reduce: caffeine, alcohol, salty processed foods — worsen bloating",
+    ],
+    recovery:["🛁 Heat pad on lower abdomen — proven cramp relief","🧘 Yin yoga or gentle stretching — hip openers especially","💊 Magnesium glycinate before bed — reduces PMS symptoms","😴 Sleep 8–9 hours — your body is doing extra work","🚶 Light walk — increases blood flow and natural painkillers"],
+  },
+  follicular:{
+    label:"Follicular Phase",icon:"🌱",day:"Days 6–13",
+    energy:"Rising energy — oestrogen climbing. Mood often improves, motivation increases. Best time to push hard.",
+    workout:{
+      title:"Your best training phase",
+      advice:"You're primed. Oestrogen supports muscle protein synthesis, pain tolerance rises, and coordination improves. Go for PRs.",
+      mods:[
+        {orig:"Standard session",newEx:"Full session — push hard",why:"Energy is rising — take advantage of peak oestrogen."},
+        {orig:"Normal weights",newEx:"Try adding 2.5–5kg on compound lifts",why:"Strength peaks in the follicular/ovulation window."},
+        {orig:"3 sets",newEx:"Add an extra set on glute exercises",why:"Recovery is fast right now — you can handle more volume."},
+      ]
+    },
+    nutrition:[
+      "🥚 Eggs daily — choline supports oestrogen metabolism",
+      "🥦 Cruciferous vegetables — broccoli, cauliflower support hormonal balance",
+      "🐔 Lean protein at every meal — support the muscle-building window",
+      "🫐 Berries — antioxidants reduce inflammation from hard training",
+      "🌾 Wholegrains — steady energy to fuel increasing workout intensity",
+    ],
+    recovery:["💪 This is your best recovery phase — use it","🛌 Normal 7–8 hrs sleep is enough","🧊 Ice bath or cold shower post heavy session for recovery","🏃 Active recovery walks on rest days to maintain momentum"],
+  },
+  ovulation:{
+    label:"Ovulation",icon:"✨",day:"Days 14–16",
+    energy:"Peak energy — oestrogen at its highest. Strength, confidence, and pain tolerance all at maximum.",
+    workout:{
+      title:"Your absolute peak — go for it",
+      advice:"Testosterone and oestrogen are both elevated. Attempt your heaviest hip thrusts and pull PRs this week. Your body is ready.",
+      mods:[
+        {orig:"Normal session",newEx:"Test your 1RM or 3RM on key lifts",why:"Pain tolerance and strength peak at ovulation."},
+        {orig:"Planned weight",newEx:"Add 5–10% on hip thrusts and deadlifts",why:"This is your highest-performance window of the month."},
+      ]
+    },
+    nutrition:[
+      "🥩 Iron-rich foods — beef, lentils — energy stays high",
+      "🐟 Fatty fish 2× this week — omega-3s during peak inflammation from hard training",
+      "🥑 Healthy fats — support hormone production at its peak",
+      "💧 Extra 500ml water — hormonal shifts can increase body temperature",
+    ],
+    recovery:["😴 Sleep deeply — hormones support deep sleep now","🤸 Mobility work to maintain joint health under heavier loads","✅ Log your PRs — you'll want this data to benchmark against"],
+  },
+  luteal:{
+    label:"Luteal Phase",icon:"🌙",day:"Days 17–28",
+    energy:"Progesterone rises. Energy gradually decreases, PMS symptoms may appear in the second half. Listen to your body.",
+    workout:{
+      title:"Maintain, don't push",
+      advice:"Maintain your training volume but don't expect PRs. Body temperature is higher (harder cardio), and fatigue comes faster. Focus on form and consistency.",
+      mods:[
+        {orig:"Heavy compound session",newEx:"Moderate weight, higher reps",why:"Joints can feel looser (relaxin hormone) — be careful with max loads."},
+        {orig:"HIIT cardio",newEx:"Steady-state walk or cycle",why:"Core temperature is already elevated — lower intensity cardio feels better."},
+        {orig:"Push for PRs",newEx:"Focus on perfecting form",why:"Use this phase to refine technique, not set records."},
+      ]
+    },
+    nutrition:[
+      "🍫 Dark chocolate — magnesium craving is real and valid",
+      "🌰 Nuts — magnesium + healthy fats reduce PMS symptoms",
+      "🍠 Complex carbs — taro, sweet potato, oats calm carb cravings healthily",
+      "🥦 Fibre-rich vegetables — helps with bloating and progesterone metabolism",
+      "💧 Extra water — progesterone can cause water retention",
+      "❌ Reduce: refined sugar and processed food — worsen PMS mood swings",
+    ],
+    recovery:["🛁 Epsom salt baths — magnesium absorbs through skin","🧘 Yoga and stretching — body is more flexible now","🌙 Prioritise sleep — progesterone makes you sleepier, use it","💬 Go easy on yourself — strength fluctuations are hormonal, not your fault"],
+  },
+};
+
+const ENERGY_ADVICE={
+  high:{
+    label:"Feeling great 💪",color:"var(--teal)",
+    msg:"Perfect day to train hard. Push those weights up and don't hold back. Your body is ready — use it.",
+    tips:["Go for a PR on hip thrusts or lat pulldown","Add an extra set on your priority exercises","Focus on progressive overload — add 2.5kg if last session was clean","Nail your pre-workout meal 60–90 min before training"],
+    mods:[]
+  },
+  medium:{
+    label:"Average energy 😐",color:"var(--gold)",
+    msg:"Train smart, not just hard. A full session is absolutely still on — just don't push for records today.",
+    tips:["Warm up 5 min longer — get your body ready","Stick to your planned weights — don't add today","Focus on mind-muscle connection, especially glutes","Hydrate well before and during the session"],
+    mods:[
+      {orig:"4 sets on hip thrust",newEx:"3 sets — same weight",why:"Slightly reduce volume but keep intensity."},
+      {orig:"HIIT cardio",newEx:"15 min steady-state walk",why:"Save the energy for lifting."},
+    ]
+  },
+  low:{
+    label:"Low energy 😔",color:"var(--rose)",
+    msg:"Still show up — movement will help. But today is about maintenance, not progress. A shorter session counts.",
+    tips:["Even 20 minutes is better than zero","Do the exercises you enjoy most first","Reduce weight by 20% — focus purely on feeling the muscle","Drink 500ml of water right now before you start"],
+    mods:[
+      {orig:"Full 3-exercise session",newEx:"Choose 2 key exercises only",why:"Hip thrust + lat pulldown covers glutes and back. Done."},
+      {orig:"Normal sets + reps",newEx:"Drop 1 set per exercise",why:"3×10 becomes 2×12 — still enough stimulus."},
+      {orig:"Heavy compound weights",newEx:"Drop weight 20%, slow the reps",why:"Slow reps (3s down) create more stimulus with less load."},
+      {orig:"60 min session",newEx:"25–30 min, that's it",why:"A short quality session beats a long miserable one every time."},
+    ]
+  },
+  exhausted:{
+    label:"Exhausted 🛑",color:"var(--muted)",
+    msg:"Your body is telling you something. Rest is training. Take the day, eat your protein, sleep — you will come back stronger.",
+    tips:["This is not weakness — this is wisdom","Go for a 15–20 min walk outside instead","Do 10 min of stretching or yoga","Eat your protein target regardless — muscle repair happens on rest days too","Go to bed 30 min earlier tonight"],
+    mods:[
+      {orig:"Gym session",newEx:"Active rest day",why:"Chronic fatigue leads to injury. Your gains are safe for one day."},
+    ]
+  }
+};
+
+function renderWellness(){
+  const p=document.getElementById("page-wellness");p.innerHTML="";
+  p.innerHTML=`<div class="page-title">🌸 Wellness</div><div class="page-sub">Period advice · Energy management · Workout modifications</div>`;
+
+  // Mode selector
+  const modeSel=document.createElement("div");modeSel.style.cssText="display:flex;gap:8px;margin-bottom:16px";
+  [{k:"energy",l:"⚡ Energy Check"},{k:"cycle",l:"🌸 Cycle Guide"}].forEach(({k,l})=>{
+    const btn=document.createElement("button");btn.className="cat-tab"+(wellnessMode===k?" active":"");
+    btn.textContent=l;btn.onclick=()=>{wellnessMode=k;renderWellness();};modeSel.appendChild(btn);
+  });p.appendChild(modeSel);
+
+  if(wellnessMode==="energy"){
+    // Energy level selector
+    const et=document.createElement("div");et.className="advice-card-title";et.innerHTML="⚡ How's your energy today?";p.appendChild(et);
+    const eb=document.createElement("div");eb.className="energy-btns";
+    [{k:"high",l:"High 💪"},{k:"medium",l:"Average 😐"},{k:"low",l:"Low 😔"},{k:"exhausted",l:"Exhausted 🛑"}].forEach(({k,l})=>{
+      const btn=document.createElement("button");btn.className="energy-btn"+(energyLevel===k?" active":"");
+      btn.textContent=l;btn.onclick=()=>{energyLevel=k;renderWellness();};eb.appendChild(btn);
+    });p.appendChild(eb);
+
+    const ea=ENERGY_ADVICE[energyLevel];
+    const hero=document.createElement("div");hero.className="card";hero.style.borderColor=ea.color+"55";
+    hero.innerHTML=`<div style="font-size:15px;font-weight:800;color:${ea.color};margin-bottom:8px">${ea.label}</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:12px">${ea.msg}</div>
+    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px">TODAY'S TIPS</div>
+    ${ea.tips.map(t=>`<div style="display:flex;gap:8px;margin-bottom:6px;font-size:13px;color:var(--muted)"><span style="color:${ea.color}">→</span><span>${t}</span></div>`).join("")}`;
+    p.appendChild(hero);
+
+    if(ea.mods.length>0){
+      const mt=document.createElement("div");mt.style.cssText="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px";mt.textContent="WORKOUT MODIFICATIONS";p.appendChild(mt);
+      ea.mods.forEach(m=>{
+        const mc=document.createElement("div");mc.className="mod-card";mc.style.cssText=`border-color:${ea.color}44;background:${ea.color}08`;
+        mc.innerHTML=`<div class="mod-orig">${m.orig}</div><div class="mod-new" style="color:${ea.color}">→ ${m.newEx}</div><div class="mod-why">${m.why}</div>`;
+        p.appendChild(mc);
+      });
+    }
+
+    // Symptom check
+    const st=document.createElement("div");st.style.cssText="font-size:13px;font-weight:800;color:var(--text);margin:14px 0 10px";st.textContent="ANY OF THESE TODAY?";p.appendChild(st);
+    const sg=document.createElement("div");sg.className="symptom-grid";
+    ["😣 Cramps","😴 Poor sleep","🤢 Nausea","😤 Mood low","💧 Bloated","🦵 Heavy legs","🧠 Brain fog","💪 Sore muscles"].forEach(sym=>{
+      const btn=document.createElement("button");btn.className="symptom-btn"+(activeSymptoms.has(sym)?" active":"");
+      btn.textContent=sym;btn.onclick=()=>{if(activeSymptoms.has(sym))activeSymptoms.delete(sym);else activeSymptoms.add(sym);renderWellness();};sg.appendChild(btn);
+    });p.appendChild(sg);
+
+    if(activeSymptoms.size>0){
+      const sr=document.createElement("div");sr.className="card card-purple";
+      sr.innerHTML=`<div style="color:var(--purple);font-weight:800;margin-bottom:10px;font-size:14px">💜 Personalised Tips</div>`;
+      const symMap={
+        "😣 Cramps":"Heat pad + magnesium supplement tonight. During training, avoid exercises that increase intra-abdominal pressure. Hip thrusts and cable work are your best friends.",
+        "😴 Poor sleep":"Reduce session length by 30%. Poor sleep = elevated cortisol = poor recovery. Add 200ml more water and prioritise 8hrs tonight.",
+        "🤢 Nausea":"Skip the pre-workout shake today. Train fasted or with a small snack (banana). Avoid heavy deadlifts — the brace can worsen nausea.",
+        "😤 Mood low":"Exercise WILL help — but choose exercises you enjoy. Hip thrusts release endorphins. Pair your session with music that energises you.",
+        "💧 Bloated":"Reduce sodium today. Avoid carbonated drinks. Light walks and abdominal breathing help. Don't skip your session — movement reduces bloating.",
+        "🦵 Heavy legs":"This is hormonal (luteal phase common). Reduce leg day load by 20%. Focus upper body or do light glute activation work instead.",
+        "🧠 Brain fog":"Keep the session simple — stick to 3 exercises you know well. No learning new movements today. Protein + complex carbs before training help.",
+        "💪 Sore muscles":"Check: is it DOMS (delayed soreness) or joint pain? DOMS — train through it lightly. Joint pain — rest that area. Foam roll before session."
+      };
+      [...activeSymptoms].forEach(sym=>{
+        if(symMap[sym])sr.innerHTML+=`<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">${sym}</div><div style="font-size:13px;color:var(--muted);line-height:1.6">${symMap[sym]}</div></div>`;
+      });
+      p.appendChild(sr);
+    }
+  } else {
+    // Cycle guide
+    const ct=document.createElement("div");ct.style.cssText="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px";ct.textContent="WHERE ARE YOU IN YOUR CYCLE?";p.appendChild(ct);
+    const cg=document.createElement("div");cg.className="cycle-tabs";
+    [{k:"menstrual",l:"🌸 Period",s:"Days 1–5"},{k:"follicular",l:"🌱 Building",s:"Days 6–13"},{k:"ovulation",l:"✨ Peak",s:"Days 14–16"},{k:"luteal",l:"🌙 Winding",s:"Days 17–28"}].forEach(({k,l,s})=>{
+      const btn=document.createElement("button");btn.className="cycle-tab"+(cyclePhase===k?" active":"");
+      btn.innerHTML=`<div class="cycle-tab-icon">${l.split(" ")[0]}</div><div class="cycle-tab-label">${l.split(" ").slice(1).join(" ")}</div><div class="cycle-tab-sub">${s}</div>`;
+      btn.onclick=()=>{cyclePhase=k;renderWellness();};cg.appendChild(btn);
+    });p.appendChild(cg);
+
+    const ca=CYCLE_ADVICE[cyclePhase];
+    const col=cyclePhase==="menstrual"?"var(--rose)":cyclePhase==="follicular"?"var(--teal)":cyclePhase==="ovulation"?"var(--gold)":"var(--purple)";
+
+    // Energy explanation
+    const ec=document.createElement("div");ec.className="card";ec.style.borderColor=col+"55";
+    ec.innerHTML=`<div style="font-size:15px;font-weight:800;color:${col};margin-bottom:8px">${ca.icon} ${ca.label} — ${ca.day}</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7">${ca.energy}</div>`;p.appendChild(ec);
+
+    // Workout section
+    const wt=document.createElement("div");wt.className="advice-card";wt.style.cssText=`border-color:${col}44;background:${col}08;margin-bottom:10px`;
+    wt.innerHTML=`<div class="advice-card-title" style="color:${col}">💪 ${ca.workout.title}</div>
+    <div class="advice-card-body">${ca.workout.advice}</div>`;p.appendChild(wt);
+
+    if(ca.workout.mods.length>0){
+      const mt2=document.createElement("div");mt2.style.cssText="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.8px;margin-bottom:8px;text-transform:uppercase";mt2.textContent="Training adjustments";p.appendChild(mt2);
+      ca.workout.mods.forEach(m=>{
+        const mc=document.createElement("div");mc.className="mod-card";mc.style.cssText=`border-color:${col}44;background:${col}06;margin-bottom:8px`;
+        mc.innerHTML=`<div class="mod-orig">${m.orig}</div><div class="mod-new" style="color:${col}">→ ${m.newEx}</div><div class="mod-why">${m.why}</div>`;p.appendChild(mc);
+      });
+    }
+
+    // Nutrition
+    const nt=document.createElement("div");nt.style.cssText="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.8px;margin:14px 0 8px;text-transform:uppercase";nt.textContent="Nutrition priorities";p.appendChild(nt);
+    const nc=document.createElement("div");nc.className="card";
+    nc.innerHTML=ca.nutrition.map(n=>`<div style="font-size:13px;color:var(--muted);margin-bottom:7px;line-height:1.5">${n}</div>`).join("");p.appendChild(nc);
+
+    // Recovery
+    const rt=document.createElement("div");rt.style.cssText="font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.8px;margin-bottom:8px;text-transform:uppercase";rt.textContent="Recovery & self-care";p.appendChild(rt);
+    const rc=document.createElement("div");rc.className="card card-purple";
+    rc.innerHTML=ca.recovery.map(r=>`<div style="font-size:13px;color:var(--muted);margin-bottom:7px;line-height:1.5">${r}</div>`).join("");p.appendChild(rc);
+  }
+}
+
+
+// ══════════════════════════════════════════════════════════════════════
+// SESSION COMMENTS
+// ══════════════════════════════════════════════════════════════════════
+// comments[weekIdx][dayKey] = [{id, text, date, rating}]
+let comments = {};
+let pendingRating = 0;
+
+function loadComments(){
+  try{ comments = JSON.parse(localStorage.getItem("fph_comments")||"{}"); }catch{}
+}
+function saveComments(){
+  try{ localStorage.setItem("fph_comments", JSON.stringify(comments)); }catch{}
+}
+function getComments(wk, day){
+  return (comments[wk]||{})[day] || [];
+}
+function addComment(wk, day, text, rating){
+  if(!text.trim()) return;
+  if(!comments[wk]) comments[wk]={};
+  if(!comments[wk][day]) comments[wk][day]=[];
+  comments[wk][day].unshift({
+    id: Date.now(),
+    text: text.trim(),
+    date: new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}),
+    rating: rating||0
+  });
+  saveComments();
+}
+function deleteComment(wk, day, id){
+  if(!(comments[wk]||{})[day]) return;
+  comments[wk][day] = comments[wk][day].filter(c=>c.id!==id);
+  saveComments();
+}
+
+const RATINGS = ["","😫","😔","😐","💪","🔥"];
+
+function renderCommentSection(container, wkIdx, dayKey){
+  const existing = container.querySelector(".comment-section");
+  if(existing) existing.remove();
+
+  const section = document.createElement("div");
+  section.className = "comment-section";
+
+  const cList = getComments(wkIdx, dayKey);
+  const labelRow = document.createElement("div");
+  labelRow.className = "comment-label";
+  labelRow.innerHTML = `<span>📝 SESSION NOTES</span>${cList.length>0?`<span class="comment-count">${cList.length} note${cList.length>1?"s":""}</span>`:""}`;
+  section.appendChild(labelRow);
+
+  // Rating picker
+  const ratingRow = document.createElement("div");
+  ratingRow.className = "rating-row";
+  const rLabel = document.createElement("span");
+  rLabel.style.cssText="font-size:12px;color:var(--muted);align-self:center;margin-right:4px";
+  rLabel.textContent="Session feel:";
+  ratingRow.appendChild(rLabel);
+  [1,2,3,4,5].forEach(r=>{
+    const btn = document.createElement("button");
+    btn.className="rating-btn"+(pendingRating===r?" selected":"");
+    btn.textContent=RATINGS[r];
+    btn.title=["","Hard struggle","Tough","Average","Strong","On fire!"][r];
+    btn.onclick=()=>{
+      pendingRating = pendingRating===r ? 0 : r;
+      renderCommentSection(container, wkIdx, dayKey);
+    };
+    ratingRow.appendChild(btn);
+  });
+  section.appendChild(ratingRow);
+
+  // Input row
+  const inputRow = document.createElement("div");
+  inputRow.className = "comment-input-row";
+  const ta = document.createElement("textarea");
+  ta.className = "comment-input";
+  ta.placeholder = "How did it feel? Any notes, weights to remember, how your body felt...";
+  ta.rows = 2;
+  const submitBtn = document.createElement("button");
+  submitBtn.className = "comment-submit";
+  submitBtn.textContent = "Add";
+  submitBtn.onclick = ()=>{
+    if(!ta.value.trim()) return;
+    addComment(wkIdx, dayKey, ta.value, pendingRating);
+    pendingRating = 0;
+    ta.value = "";
+    renderCommentSection(container, wkIdx, dayKey);
+  };
+  // Allow Enter to submit (Shift+Enter for newline)
+  ta.addEventListener("keydown", e=>{
+    if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); submitBtn.click(); }
+  });
+  inputRow.append(ta, submitBtn);
+  section.appendChild(inputRow);
+
+  // Comments list
+  if(cList.length > 0){
+    const list = document.createElement("div");
+    list.className = "comment-list";
+    cList.forEach(c=>{
+      const item = document.createElement("div");
+      item.className = "comment-item";
+      const meta = document.createElement("div");
+      meta.className = "comment-meta";
+      const dateSpan = document.createElement("span");
+      dateSpan.className = "comment-date";
+      dateSpan.textContent = c.date;
+      const ratingSpan = document.createElement("span");
+      ratingSpan.className = "comment-rating";
+      ratingSpan.textContent = c.rating ? RATINGS[c.rating] : "";
+      meta.append(dateSpan, ratingSpan);
+      const txt = document.createElement("div");
+      txt.className = "comment-text";
+      txt.textContent = c.text;
+      const delBtn = document.createElement("button");
+      delBtn.className = "comment-delete";
+      delBtn.textContent = "×";
+      delBtn.onclick = ()=>{
+        if(confirm("Delete this note?")){ deleteComment(wkIdx, dayKey, c.id); renderCommentSection(container, wkIdx, dayKey); }
+      };
+      item.append(meta, txt, delBtn);
+      list.appendChild(item);
+    });
+    section.appendChild(list);
+  } else {
+    const empty = document.createElement("div");
+    empty.className = "no-comments";
+    empty.textContent = "No notes yet — add one after your session!";
+    section.appendChild(empty);
+  }
+
+  container.appendChild(section);
+}
+
+document.querySelectorAll("[data-tab]").forEach(btn=>{btn.addEventListener("click",()=>switchTab(btn.dataset.tab));});
+
+initModalListener();
+loadState();
+loadComments();
+switchTab("overview");
+</script>
+
+</body>
+</html>
